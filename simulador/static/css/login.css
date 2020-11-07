@@ -1,0 +1,19 @@
+body {
+    background: linear-gradient(-40deg, #D9C93E 0%, #009C3B 100%);
+    background-repeat: space;
+    background-attachment: fixed;
+    color: #FFF;
+}
+
+.card {
+    background: transparent;
+    border: none;
+}
+
+.form-text {
+    color: #33642c !important;
+}
+
+.modal {
+    color: #6b6f82
+}

@@ -1,0 +1,68 @@
+{% extends "base/index.html" %}
+
+{% block titulo %}Ambiente{% endblock %}
+
+{% block content %}
+<style>
+    .opcao {
+        border: 1px solid;
+        width: 25px;
+        height: 25px;
+    }
+</style>
+
+<div class="container mt-3">
+    <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
+        <div class='h-100 overflow-y-auto p-3'>
+            <div class='p-2 d-flex border-bottom mb-2'>
+                <h1 class='p-1 m-3 '><i class="fas fa-map-marked-alt"></i></h1>
+                <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <!-- Menu de edição -->
+                    <div class="col-2">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-route mr-1 mr-2"></i>Rota</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
+                          </div>
+                    </div>
+                    <div id="ambiente" class="d-flex col-10">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ambiente = document.getElementById('ambiente')
+
+    let contador = 1
+    for (let coluna = 1; coluna <= 40; coluna++) {
+        const coluna = document.createElement('div') 
+
+        coluna.setAttribute('class', 'flex-row')
+
+        ambiente.append(coluna)
+
+        for (let i = 1; i <= 25; i++) {
+            const opcao = document.createElement('div')
+            opcao.setAttribute('class', 'align-self-start opcao text-center')
+            opcao.setAttribute('id', `opcao${ contador }`)
+
+            opcao.textContent = '-'
+
+            coluna.append(opcao)
+            
+            contador += 1
+        }   
+    }
+</script>
+
+{% endblock %}
