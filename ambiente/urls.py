@@ -5,5 +5,6 @@ app_name = 'ambiente'
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
-    path('ambiente/<int:id>', views.ambiente, name='ambiente')
+    path('ambiente/<int:id>', views.ambiente, name='ambiente'),
+    path('salvar_ambiente/', views.salvarAmbiente, name='salvar_ambiente'),
 ]

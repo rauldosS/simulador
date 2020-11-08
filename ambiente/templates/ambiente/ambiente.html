@@ -9,6 +9,12 @@
         width: 25px;
         height: 25px;
     }
+
+    .menu {
+        border: 1px solid;
+        width: 25px;
+        height: 25px;
+    }
 </style>
 
 <div class="container mt-3">
@@ -23,17 +29,50 @@
                 <div class="row">
                     <!-- Menu de edição -->
                     <div class="col-2">
+                        <p class="pt-3">Opções</p>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
-                            <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-route mr-1 mr-2"></i>Rota</a>
-                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
-                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
-                            <a href="#" class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
-                          </div>
+                            <a onclick="selecionarTipo('I')" tipo='I' class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
+                            <a onclick="selecionarTipo('R')" tipo='R' class="list-group-item list-group-item-action"><i class="fas fa-route mr-2"></i>Rota</a>
+                            <a onclick="selecionarTipo('D')" tipo='D' class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
+                            <a onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
+                            <a onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
+                        </div>
+                        <p class="pt-3">Edição</p>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group">
+                            <label for="nome_opcao_selecionada">Opção</label>
+                            <input id="nome_opcao_selecionada" type="text" class="form-control" placeholder="Nome opção">
+                        </div>
+                        <div class="form-group">
+                            <label for="duracao_opcao_selecionada">Duração (segundos)</label>
+                            <input id="duracao_opcao_selecionada" type="number" class="form-control" placeholder="Em segundos">
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <label class="input-group-text" for="direcao_opcao_selecionada">Direção</label>
+                                </div>
+                                <select class="custom-select" id="direcao_opcao_selecionada">
+                                  <option selected>Selecione</option>
+                                  <option value="C">Cima</option>
+                                  <option value="D">Direita</option>
+                                  <option value="B">Baixo</option>
+                                  <option value="E">Esquerda</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo_opcao_selecionada">Tipo</label>
+                            <input id="tipo_opcao_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
+                        </div>
                     </div>
                     <div id="ambiente" class="d-flex col-10">
 
                     </div>
+                </div>
+
+                <div class="p-3 text-right">
+                    <a onclick="salvarAmbiente()" class="btn btn-success text-white">Salvar Ambiente</a>
                 </div>
             </div>
         </div>
@@ -42,6 +81,15 @@
 
 <script>
     const ambiente = document.getElementById('ambiente')
+    const opcoes = {
+        'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início'],
+        'R': ['fas fa-road text-white', 'bg-success', 'Rota'],
+        'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão'],
+        'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada'],
+        'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim'],
+    }
+
+    let tipo_selecionado = ''
 
     let contador = 1
     for (let coluna = 1; coluna <= 40; coluna++) {
@@ -55,13 +103,144 @@
             const opcao = document.createElement('div')
             opcao.setAttribute('class', 'align-self-start opcao text-center')
             opcao.setAttribute('id', `opcao${ contador }`)
+            opcao.setAttribute('onclick', `ativarOpcao('opcao${ contador }')`)
 
-            opcao.textContent = '-'
+            opcao.textContent = '*'
 
             coluna.append(opcao)
             
             contador += 1
         }   
+    }
+
+    selecionarTipo = (tipo) => {
+        tipo_selecionado = tipo
+
+        document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
+        document.querySelector(`[tipo=${tipo}]`).classList.add(opcoes[tipo][1], 'text-white')
+    }
+
+    ativarOpcao = (opcao) => {
+        tipo_selecionado == '' ? alert('Selecione um tipo') : configurarOpcao(opcao, tipo_selecionado)
+    }
+
+    configurarOpcao = (opcao, tipo) => {
+        marcar_opcao(opcao)
+        criarPropriedadesOpcao(opcao, tipo)
+        atualizarMenuEdicao(opcao, tipo)
+    }
+
+    criarPropriedadesOpcao = (opcao, tipo) => {
+        const elemento_opcao = document.getElementById(opcao)
+        elemento_opcao.innerHTML = ''
+        elemento_opcao.classList.add(opcoes[tipo][1], 'opcao_selecionada')
+        elemento_opcao.setAttribute('onclick', `atualizarMenuEdicao('${opcao}', '${tipo}')`)
+        elemento_opcao.setAttribute('nome', `Opção ${tipo}`)
+        elemento_opcao.setAttribute('direcao', '')
+        elemento_opcao.setAttribute('duracao', '')
+        elemento_opcao.setAttribute('tipo_opcao', tipo)
+
+        const i = document.createElement('i')
+        i.setAttribute('class', opcoes[tipo][0])
+        elemento_opcao.append(i)
+    }
+
+    atualizarMenuEdicao = (opcao, tipo) => {
+        const elemento_opcao = document.getElementById(opcao)
+        const nome_opcao_selecionada = document.getElementById('nome_opcao_selecionada')
+        const direcao_opcao_selecionada = document.getElementById('direcao_opcao_selecionada')
+        const duracao_opcao_selecionada = document.getElementById('duracao_opcao_selecionada')
+
+        nome_opcao_selecionada.value = elemento_opcao.getAttribute('nome')
+        nome_opcao_selecionada.setAttribute('oninput', `atualizarAtributoOpcao('${opcao}', 'nome_opcao_selecionada', 'nome')`)
+        duracao_opcao_selecionada.setAttribute('oninput', `atualizarAtributoOpcao('${opcao}', 'duracao_opcao_selecionada', 'duracao')`)
+
+        direcao_opcao_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoOpcao('${opcao}', 'direcao_opcao_selecionada', 'direcao')`)
+    }
+
+    atualizarAtributoOpcao = (opcao, elemento, atributo) => {
+        const elemento_opcao = document.getElementById(opcao)
+        const campo = document.getElementById(elemento)
+
+        elemento_opcao.setAttribute(atributo, campo.value)
+    }
+
+    atualizarAtributoSelecaoOpcao = (opcao, elemento, atributo) => {
+        const elemento_opcao = document.getElementById(opcao)
+        
+        let opcaoSelecionada = document.getElementById(elemento)
+        let valorSelecionado = opcaoSelecionada.options[opcaoSelecionada.selectedIndex].value
+
+        console.log(valorSelecionado)
+        
+
+        elemento_opcao.setAttribute(atributo, valorSelecionado)
+    }
+
+    marcar_opcao = (opcao) => {
+        const elemento_opcao = document.getElementById(opcao)
+    }
+
+    salvarAmbiente = () => {
+        var xhttp = new XMLHttpRequest()
+
+        xhttp.open("POST", "/salvar_ambiente/", true)
+
+        xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+        xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken'))
+
+        xhttp.responseType = 'json'
+        xhttp.onreadystatechange = function(data) {
+            if (this.readyState == 4 && this.status == 200) {
+                let json = xhttp.response
+                if (json) {
+                    console.log(json)           
+                }
+            }
+        }
+
+        const opcoes_selecionadas = document.querySelectorAll('.opcao_selecionada')
+        let dados = {}
+        let dict_opcoes = {}
+
+        const ambiente = {'ambiente': `{{ ambiente.id }}`}
+        dados = Object.assign(dados, ambiente)
+
+        opcoes_selecionadas.forEach(opcao => {
+            let id = `${ opcao.getAttribute('id') }`
+
+            let op = {
+                    'nome': opcao.getAttribute('nome'),
+                    'direcao': opcao.getAttribute('direcao'),
+                    'duracao': opcao.getAttribute('duracao'),
+                    'tipo': opcao.getAttribute('tipo_opcao'),
+                }
+
+            dict_opcoes[id] = op
+        })
+
+        dict_opcoes = {'opcoes': dict_opcoes}
+        dados = Object.assign(dados, dict_opcoes)
+
+        xhttp.send("dados=" + JSON.stringify(dados))
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 </script>
 
