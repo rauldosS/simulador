@@ -15,14 +15,36 @@
         width: 25px;
         height: 25px;
     }
+
+    .opcao_marcada {
+        outline: 2px #FF0000 solid;
+        outline-style: dashed;
+    }
 </style>
 
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
         <div class='h-100 overflow-y-auto p-3'>
             <div class='p-2 d-flex border-bottom mb-2'>
-                <h1 class='p-1 m-3 '><i class="fas fa-map-marked-alt"></i></h1>
-                <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+                <div class='p-2 d-flex border-bottom mb-2'>
+                    <h1 class='p-1 m-3 '><i class="fas fa-map-marked-alt"></i></h1>
+                    <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+                </div>
+                <div class="d-flex flex-end w-100 row">
+                    <div class="input-group mb-3 col-3">
+                        <div class="input-group-prepend" style="height: 38px;">
+                          <label class="input-group-text" for="versao">Versão</label>
+                        </div>
+                        <select class="custom-select" id="versao" onchange="selecionarVersao(this)">
+                            <option value="{{ versao_carregada }}">{{ versao_carregada }}</option>
+                            {% for versao in versoes %} 
+                                {% if not versao_carregada == versao %}
+                                    <option value="{{ versao }}">{{ versao }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="container">
@@ -53,7 +75,7 @@
                                   <label class="input-group-text" for="direcao_opcao_selecionada">Direção</label>
                                 </div>
                                 <select class="custom-select" id="direcao_opcao_selecionada">
-                                  <option selected>Selecione</option>
+                                  <option value="S" selected>Selecione</option>
                                   <option value="C">Cima</option>
                                   <option value="D">Direita</option>
                                   <option value="B">Baixo</option>
@@ -72,7 +94,7 @@
                 </div>
 
                 <div class="p-3 text-right">
-                    <a onclick="salvarAmbiente()" class="btn btn-success text-white">Salvar Ambiente</a>
+                    <a id="btn_salvar" onclick="salvarAmbiente()" class="btn btn-success text-white">Salvar Ambiente</a>
                 </div>
             </div>
         </div>
@@ -80,6 +102,7 @@
 </div>
 
 <script>
+    const id_ambiente = {{ ambiente.id }}
     const ambiente = document.getElementById('ambiente')
     const opcoes = {
         'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início'],
@@ -88,8 +111,37 @@
         'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada'],
         'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim'],
     }
+    const rotas = {
+        'S': 'Selecionar',
+        'C': 'fas fa-arrow-up',
+        'D': 'fas fa-arrow-right',
+        'B': 'fas fa-arrow-down',
+        'E': 'fas fa-arrow-left',
+    }
 
     let tipo_selecionado = ''
+
+    carregar_opcoes = () => {
+        let opcao_documento = ''
+        let i = ''
+
+        {% for opcao in opcoes %}
+            opcao_documento = document.getElementById('{{ opcao.opcao }}')
+
+            opcao_documento.innerHTML = ''
+            opcao_documento.classList.add(opcoes['{{ opcao.tipo }}'][1], 'opcao_selecionada')
+            opcao_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ opcao.opcao }}'}', '${'{{ opcao.tipo }}'}')`)
+            opcao_documento.setAttribute('nome', '{{ opcao.nome }}')
+            opcao_documento.setAttribute('direcao', '{{ opcao.direcao }}')
+            opcao_documento.setAttribute('duracao', '{{ opcao.duracao }}')
+            opcao_documento.setAttribute('tipo_opcao', '{{ opcao.tipo }}')
+
+            i = document.createElement('i')
+            i.setAttribute('class', '{{ opcao.tipo }}' == 'R' ? `${rotas['{{ opcao.direcao }}']} text-white` : opcoes['{{ opcao.tipo }}'][0])
+            
+            opcao_documento.append(i)
+        {% endfor %}
+    }
 
     let contador = 1
     for (let coluna = 1; coluna <= 40; coluna++) {
@@ -113,6 +165,8 @@
         }   
     }
 
+    carregar_opcoes()
+
     selecionarTipo = (tipo) => {
         tipo_selecionado = tipo
 
@@ -125,7 +179,6 @@
     }
 
     configurarOpcao = (opcao, tipo) => {
-        marcar_opcao(opcao)
         criarPropriedadesOpcao(opcao, tipo)
         atualizarMenuEdicao(opcao, tipo)
     }
@@ -136,7 +189,7 @@
         elemento_opcao.classList.add(opcoes[tipo][1], 'opcao_selecionada')
         elemento_opcao.setAttribute('onclick', `atualizarMenuEdicao('${opcao}', '${tipo}')`)
         elemento_opcao.setAttribute('nome', `Opção ${tipo}`)
-        elemento_opcao.setAttribute('direcao', '')
+        elemento_opcao.setAttribute('direcao', 'S')
         elemento_opcao.setAttribute('duracao', '')
         elemento_opcao.setAttribute('tipo_opcao', tipo)
 
@@ -156,6 +209,9 @@
         duracao_opcao_selecionada.setAttribute('oninput', `atualizarAtributoOpcao('${opcao}', 'duracao_opcao_selecionada', 'duracao')`)
 
         direcao_opcao_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoOpcao('${opcao}', 'direcao_opcao_selecionada', 'direcao')`)
+
+        desmarcar_opcoes()
+        marcar_opcao(opcao)
     }
 
     atualizarAtributoOpcao = (opcao, elemento, atributo) => {
@@ -170,19 +226,46 @@
         
         let opcaoSelecionada = document.getElementById(elemento)
         let valorSelecionado = opcaoSelecionada.options[opcaoSelecionada.selectedIndex].value
-
-        console.log(valorSelecionado)
         
 
         elemento_opcao.setAttribute(atributo, valorSelecionado)
+        elemento_opcao.innerHTML = `<i class="${rotas[valorSelecionado]} text-white"></i>`
     }
 
     marcar_opcao = (opcao) => {
-        const elemento_opcao = document.getElementById(opcao)
+        opcao_marcada = document.getElementById(opcao)
+
+        opcao_marcada.classList.toggle('opcao_marcada')
+
+        document.getElementById('duracao_opcao_selecionada').value = opcao_marcada.getAttribute('duracao')
+        document.getElementById('direcao_opcao_selecionada').value = opcao_marcada.getAttribute('direcao')
+        document.getElementById('tipo_opcao_selecionada').value = opcoes[opcao_marcada.getAttribute('tipo_opcao')][2]
+
+        document.querySelector(`option[value="${opcao_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+    }
+
+    desmarcar_opcoes = () => {
+        try {
+            document.querySelector('.opcao_marcada').classList.toggle('opcao_marcada')
+        } catch (error) {
+            return
+        }
+    }
+
+    selecionarVersao = () => { 
+        let opcaoSelecionada = document.getElementById('versao')
+        let valorSelecionado = opcaoSelecionada.options[opcaoSelecionada.selectedIndex].value
+
+        window.location.href = `http://127.0.0.1:8000/ambiente/${id_ambiente}/${valorSelecionado}`
     }
 
     salvarAmbiente = () => {
         var xhttp = new XMLHttpRequest()
+        const btn_salvar = document.getElementById('btn_salvar')
+
+        btn_salvar.innerHTML = `<i class="fas fa-spinner fa-spin mr-3"></i>Salvando`
+        btn_salvar.classList.add('disabled')
+        btn_salvar.style.opacity = '1'
 
         xhttp.open("POST", "/salvar_ambiente/", true)
 
@@ -195,7 +278,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 let json = xhttp.response
                 if (json) {
-                    console.log(json)           
+                    window.location.href = `http://127.0.0.1:8000/ambiente/${id_ambiente}/${json['versao']}`
                 }
             }
         }

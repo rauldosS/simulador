@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Ambiente, Opcao
 from django.http import HttpResponseRedirect, JsonResponse
+from django.db.models import Count
 import json
 
 # Create your views here.
@@ -13,11 +15,25 @@ def inicio(request):
 
     return render(request, 'ambiente/inicio.html', dados)
 
-def ambiente(request, id=0):
+def ambiente(request, id=0, versao=0):
+    versao_carregada = versao
     ambiente = Ambiente.objects.get(id=id)
+    opcoes = Opcao.objects.filter(ambiente=ambiente, versao=versao)
+
+    versoes = Opcao.objects.filter(ambiente=ambiente).order_by('-versao')
+    versoes_opcoes = {}
+    
+    for versao in versoes:
+        versoes_opcoes.update({versao.versao: 0})
+
+    for versao in versoes:
+        versoes_opcoes[versao.versao] = versoes_opcoes[versao.versao] + 1
 
     dados = {
-        'ambiente': ambiente
+        'ambiente': ambiente,
+        'opcoes': opcoes,
+        'versoes': versoes_opcoes,
+        'versao_carregada': versao_carregada
     }
 
     return render(request, 'ambiente/ambiente.html', dados)
@@ -28,34 +44,21 @@ def salvarAmbiente(request):
             dados = json.loads(request.POST.get('dados', ''))
             
             ambiente = Ambiente.objects.get(id=dados['ambiente'])
+            ambiente.versao = ambiente.versao + 1
+            ambiente.save()
 
             atualizarOpcoes(ambiente, dados['opcoes'])
 
-            return JsonResponse({'ok': 'ok'}) 
+            return JsonResponse({'versao': ambiente.versao})
         except Exception as e:
             print(e)
             return JsonResponse({'erro': 'erro'})
 
 def atualizarOpcoes(ambiente, opcoes):
     for opcao, dados in opcoes.items():
-        
-        try:
-            objeto_opcao = Opcao.objects.get(ambiente=ambiente, opcao=str(opcao))
-            print(objeto_opcao)
+        registrarOpcao(ambiente, opcao, dados, ambiente.versao)
 
-            atualizarOpcao(objeto_opcao, dados)
-        except Exception as e:
-            registrarOpcao(ambiente, opcao, dados)
-
-def atualizarOpcao(opcao, dados):
-    opcao.nome=dados['nome']
-    opcao.direcao=dados['direcao']
-    opcao.duracao=int(dados['duracao'])
-    opcao.tipo=dados['tipo']
-
-    opcao.save()
-
-def registrarOpcao(ambiente, opcao, dados):
+def registrarOpcao(ambiente, opcao, dados, versao):
     op = Opcao.objects.create(
         ambiente=ambiente,
         opcao=opcao,
@@ -63,7 +66,7 @@ def registrarOpcao(ambiente, opcao, dados):
         direcao=dados['direcao'],
         duracao=int(dados['duracao']),
         tipo=dados['tipo'],
+        versao=versao,
     )
 
     op.save()
-

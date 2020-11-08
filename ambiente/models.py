@@ -4,6 +4,7 @@ from django.utils import timezone
 # Create your models here.
 class Ambiente(models.Model):
     nome = models.CharField(max_length=255)
+    versao = models.IntegerField()
     data = models.DateField('Data de criação', auto_now=False, default=timezone.now)
 
     def __str__(self):
@@ -31,6 +32,7 @@ class Opcao(models.Model):
     )
 
     ambiente = models.ForeignKey(Ambiente, on_delete=models.CASCADE)
+    versao = models.IntegerField()
     opcao = models.CharField('Opção', max_length=10)
     nome = models.CharField('Nome', max_length=255)
     direcao = models.CharField('Direcao', max_length=1, choices=DIRECAO_CHOICES)

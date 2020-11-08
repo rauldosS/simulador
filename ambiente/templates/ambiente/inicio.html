@@ -7,7 +7,7 @@
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
         <div class='h-100 overflow-y-auto p-3'>
             <div class='p-2 d-flex border-bottom mb-2'>
-                <h1 class='p-1 m-3 '><i class="fas fa-cubes"></i></h1>
+                <h1 class='p-1 m-3 '><i class="fas fa-cube"></i></h1>
                 <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>Ambientes</span>
             </div>
             <h5 class='p-3 mb-3'> <i class="fas fa-bars pr-3 pl-0 "></i>Selecione um ambiente</h5>
@@ -18,8 +18,8 @@
                 
                 <div class="card">
                     <div class="card-body">
-                      <h5 class="card-title text-truncate" style="width: 78%;">{{ ambiente.nome }} <span class="badge badge-theme" style="position: absolute; right: 5%;">Ambiente</span></h5>
-                      <a href="{% url 'ambiente:ambiente' ambiente.id|safe %}" class="btn btn-danger">Editar</a>
+                      <h5 class="card-title text-truncate" style="width: 78%;">{{ ambiente.nome }} <span class="badge badge-primary" style="position: absolute; right: 5%;">Versão {{ ambiente.versao }}</span></h5>
+                      <a href="{% url 'ambiente:ambiente' ambiente.id|safe ambiente.versao|safe %}" class="btn btn-danger">Editar</a>
                     </div>
                 </div>
                 </div>

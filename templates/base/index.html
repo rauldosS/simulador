@@ -31,11 +31,8 @@
       </div>
       <div class='container flex-column d-flex h-100 pt-2' style="place-content: center; height: 90vh !important;">
         <ul class="d-flex flex-column pl-0 mb-0 ">
-          <a href='' data-content="Início" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'home' %}active{% endif %}"><i class="fas fa-home fa-2x text-theme"></i></a>
-          {% if user.user_admin %}
-            
-          {% endif %}
-          <a href='/accounts/logout/' data-content="Sair" class="list-group-item list-group-item-action border-0 mt-1 mb-1"><i class="fas fa-power-off fa-2x text-theme"></i></a>
+          <a href='{% url "ambiente:inicio" %}' data-content="Ambiente" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'ambiente' %}active{% endif %}"><i class="fas fa-cube fa-2x text-theme"></i></a>
+          <a href='{% url "cenario:inicio" %}' data-content="Cenário" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'cenario' %}active{% endif %}"><i class="fas fa-cubes fa-2x text-theme"></i></a>
         </ul>
       </div>
     </div>

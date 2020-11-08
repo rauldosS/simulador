@@ -4,13 +4,13 @@ from ambiente.models import Ambiente, Opcao, Decisao, Participante
 # Register your models here.
 @admin.register(Ambiente)
 class AmbienteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'nome', 'data']
+    list_display = ['id', 'nome', 'data', 'versao']
     list_filter = ['data']
     search_filter = ['nome']
 
 @admin.register(Opcao)
 class OpcaoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'ambiente', 'opcao', 'direcao', 'duracao']
+    list_display = ['id', 'ambiente', 'opcao', 'direcao', 'duracao', 'versao']
     list_filter = ['ambiente']
     search_filter = ['ambiente', 'opcao']
 

@@ -1,0 +1,43 @@
+{% extends "base/index.html" %}
+
+{% block titulo %}Ambientes{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
+        <div class='h-100 overflow-y-auto p-3'>
+            <div class='p-2 d-flex border-bottom mb-2'>
+                <h1 class='p-1 m-3 '><i class="fas fa-cubes"></i></h1>
+                <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>Cenários</span>
+            </div>
+            <h5 class='p-3 mb-3'> <i class="fas fa-bars pr-3 pl-0 "></i>Cenários por ambiente</h5>
+            
+            <div class="container">
+                <div id="accordion">
+                    {% for ambiente, dados in cenarios_ambientes.items %}
+                    <div class="card">
+                        <a class="" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    {{ dados.nome }} <span class="badge badge-primary badge-accordion">Ambiente {{ ambiente }}</span>
+                                </h5>
+                            </div>
+                        </a>
+                    
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body p-3">
+                                {% for cenario, dados_cenario in dados.cenarios.items %}
+                                    <a href="{% url 'cenario:cenario' cenario %}">
+                                        <span class="badge badge-pill badge-primary p-3">{{ cenario }} - {{ dados_cenario}}</span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
