@@ -33,7 +33,8 @@ def ambiente(request, id=0, versao=0):
         'ambiente': ambiente,
         'opcoes': opcoes,
         'versoes': versoes_opcoes,
-        'versao_carregada': versao_carregada
+        'versao_carregada': versao_carregada,
+        'formula': ''
     }
 
     return render(request, 'ambiente/ambiente.html', dados)
@@ -66,6 +67,7 @@ def registrarOpcao(ambiente, opcao, dados, versao):
         direcao=dados['direcao'],
         duracao=int(dados['duracao']),
         tipo=dados['tipo'],
+        icone=dados['icone'],
         versao=versao,
     )
 

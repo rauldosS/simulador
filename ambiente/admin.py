@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ambiente.models import Ambiente, Opcao, Decisao, Participante
+from ambiente.models import Ambiente, Opcao, Decisao, Participante, PredefinicaoSimulacao
 
 # Register your models here.
 @admin.register(Ambiente)
@@ -22,6 +22,11 @@ class DecisaoAdmin(admin.ModelAdmin):
 
 @admin.register(Participante)
 class ParticipanteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'ambiente', 'nome', 'idade', 'sexo']
+    list_display = ['id', 'ambiente', 'nome']
     list_filter = ['ambiente', 'nome']
-    search_filter = ['ambiente', 'nome', 'idade', 'sexo']
+    search_filter = ['ambiente', 'nome']
+
+@admin.register(PredefinicaoSimulacao)
+class PredefinicaoSimulacaoAdmin(admin.ModelAdmin):
+    list_display = ['id', 'nome']
+    search_filter = ['nome']
