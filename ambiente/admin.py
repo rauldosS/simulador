@@ -11,8 +11,8 @@ class AmbienteAdmin(admin.ModelAdmin):
 @admin.register(Opcao)
 class OpcaoAdmin(admin.ModelAdmin):
     list_display = ['id', 'ambiente', 'opcao', 'direcao', 'duracao', 'versao']
-    list_filter = ['ambiente']
-    search_filter = ['ambiente', 'opcao']
+    list_filter = ['ambiente', 'versao']
+    search_filter = ['ambiente', 'opcao', 'versao']
 
 @admin.register(Decisao)
 class DecisaoAdmin(admin.ModelAdmin):

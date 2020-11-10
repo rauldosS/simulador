@@ -33,6 +33,7 @@ class Opcao(models.Model):
         ('D', 'Direita'),
         ('B', 'Baixo'),
         ('E', 'Esquerda'),
+        ('DC', 'Decisão'),
     )
 
     TIPO_CHOICES = (
@@ -49,7 +50,7 @@ class Opcao(models.Model):
     opcao = models.CharField('Opção', max_length=10)
     icone = models.CharField(max_length=255, blank=True, null=True)
     nome = models.CharField('Nome', max_length=255)
-    direcao = models.CharField('Direcao', max_length=1, choices=DIRECAO_CHOICES, blank=True, null=True)
+    direcao = models.CharField('Direcao', max_length=2, choices=DIRECAO_CHOICES, blank=True, null=True)
     duracao = models.IntegerField('Tempo em segundos')
     tipo = models.CharField('Tipo de opção', max_length=1, choices=TIPO_CHOICES)
     formula = models.CharField('Fórmula', max_length=1000)
