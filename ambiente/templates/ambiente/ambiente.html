@@ -4,7 +4,7 @@
 
 {% block content %}
 <style>
-    .opcao {
+    .atividade {
         border: 1px solid;
     }
 
@@ -14,7 +14,7 @@
         height: 25px;
     }
 
-    .opcao_marcada {
+    .atividade_marcada {
         outline: 2px #FF0000 solid;
         outline-style: dashed;
     }
@@ -65,24 +65,24 @@
                             <a onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
                             <a onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
                             <div class="dropdown-divider"></div>
-                            <a id="remover_opcao" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
+                            <a id="remover_atividade" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
                         </div>
                         <p class="pt-3">Edição</p>
                         <div class="dropdown-divider"></div>
                         <div class="form-group">
-                            <label for="nome_opcao_selecionada">Opção</label>
-                            <input id="nome_opcao_selecionada" type="text" class="form-control" placeholder="Nome opção">
+                            <label for="nome_atividade_selecionada">Opção</label>
+                            <input id="nome_atividade_selecionada" type="text" class="form-control" placeholder="Nome opção">
                         </div>
                         <div class="form-group">
-                            <label for="duracao_opcao_selecionada">Duração (segundos)</label>
-                            <input id="duracao_opcao_selecionada" type="number" class="form-control" placeholder="Em segundos">
+                            <label for="duracao_atividade_selecionada">Duração (segundos)</label>
+                            <input id="duracao_atividade_selecionada" type="number" class="form-control" placeholder="Em segundos">
                         </div>
                         <div class="form-group">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <label class="input-group-text" for="direcao_opcao_selecionada">Direção</label>
+                                  <label class="input-group-text" for="direcao_atividade_selecionada">Direção</label>
                                 </div>
-                                <select class="custom-select" id="direcao_opcao_selecionada">
+                                <select class="custom-select" id="direcao_atividade_selecionada">
                                   <option value="S" selected>Selecione</option>
                                   <option value="C">Cima</option>
                                   <option value="D">Direita</option>
@@ -93,12 +93,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="tipo_opcao_selecionada">Tipo</label>
-                            <input id="tipo_opcao_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
+                            <label for="tipo_atividade_selecionada">Tipo</label>
+                            <input id="tipo_atividade_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
                         </div>
                         <div class="form-group">
-                            <label for="formula_opcao_selecionada">Fórmula</label>
-                            <input id="formula_opcao_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                            <label for="formula_atividade_selecionada">Fórmula</label>
+                            <input id="formula_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
@@ -151,8 +151,8 @@
                         <p class="pt-3">Edição</p>
                         <div class="dropdown-divider"></div>
                         <div class="form-group">
-                            <label for="asfasf_opcao_selecionada">Opção</label>
-                            <input id="asfasf_opcao_selecionada" type="text" class="form-control" placeholder="Nome opção">
+                            <label for="asfasf_atividade_selecionada">Opção</label>
+                            <input id="asfasf_atividade_selecionada" type="text" class="form-control" placeholder="Nome opção">
                         </div>
                     </div>
 
@@ -169,7 +169,7 @@
 <script>
     const id_ambiente = {{ ambiente.id }}
     const ambiente = document.getElementById('ambiente')
-    const opcoes = {
+    const atividades = {
         'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início'],
         'R': ['fas fa-road text-white', 'bg-success', 'Rota'],
         'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão'],
@@ -190,54 +190,51 @@
     let tipo_selecionado = ''
     let objeto_selecionado = ''
 
-    carregar_opcoes = () => {
-        let opcao_documento = ''
+    carregar_atividades = () => {
+        let atividade_documento = ''
         let i = ''
         let icone = ''
 
-        {% for opcao in opcoes %}
-            opcao_documento = document.getElementById('{{ opcao.opcao }}')
+        {% for atividade in atividades %}
+            atividade_documento = document.getElementById('{{ atividade.atividade }}')
 
-            opcao_documento.innerHTML = ''
-            opcao_documento.classList.add('{{ opcao.tipo }}' == 'O' ? 'bg-white' : opcoes['{{ opcao.tipo }}'][1], 'opcao_selecionada')
-            opcao_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ opcao.opcao }}'}', '${'{{ opcao.tipo }}'}')`)
-            opcao_documento.setAttribute('title', '{{ opcao.nome }}')
-            opcao_documento.setAttribute('direcao', '{{ opcao.direcao }}')
-            opcao_documento.setAttribute('duracao', '{{ opcao.duracao }}')
-            opcao_documento.setAttribute('tipo_opcao', '{{ opcao.tipo }}')
-            opcao_documento.setAttribute('icone', '{{ opcao.icone }}')
+            atividade_documento.innerHTML = ''
+            atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
+            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
+            atividade_documento.setAttribute('title', '{{ atividade.nome }}')
+            atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
+            atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
+            atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
+            atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
 
             i = document.createElement('i')
             
-            if ('{{ opcao.tipo }}' == 'O') {
-                i.setAttribute('class', '{{ opcao.icone }}')
+            if ('{{ atividade.tipo }}' == 'O') {
+                i.setAttribute('class', '{{ atividade.icone }}')
             } else {
-                i.setAttribute('class', '{{ opcao.tipo }}' == 'R' ? `${rotas['{{ opcao.direcao }}']} text-white` : opcoes['{{ opcao.tipo }}'][0])   
+                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}']} text-white` : atividades['{{ atividade.tipo }}'][0])   
             }
             
-            opcao_documento.append(i)
+            atividade_documento.append(i)
         {% endfor %}
     }
 
-    let contador = 1
-    for (let coluna = 1; coluna <= 40; coluna++) {
-        const coluna = document.createElement('div') 
+    for (let coluna = 0; coluna <= 40; coluna++) {
+        const div_coluna = document.createElement('div') 
 
-        coluna.setAttribute('class', 'flex-row coluna-mapa')
+        div_coluna.setAttribute('class', 'flex-row coluna-mapa')
 
-        ambiente.append(coluna)
+        ambiente.append(div_coluna)
 
-        for (let i = 1; i <= 25; i++) {
-            const opcao = document.createElement('div')
-            opcao.setAttribute('class', 'align-self-start opcao text-center')
-            opcao.setAttribute('id', `opcao${ contador }`)
-            opcao.setAttribute('onclick', `ativarOpcao('opcao${ contador }')`)
+        for (let linha = 0; linha <= 25; linha++) {
+            const atividade = document.createElement('div')
+            atividade.setAttribute('class', 'align-self-start atividade text-center')
+            atividade.setAttribute('id', `${ linha }${ coluna }`)
+            atividade.setAttribute('onclick', `ativarAtividade(['${ linha }', '${ coluna }'])`)
 
-            opcao.textContent = '*'
+            atividade.textContent = '*'
 
-            coluna.append(opcao)
-            
-            contador += 1
+            div_coluna.append(atividade)
         }   
     }
 
@@ -247,119 +244,124 @@
         document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
 
         objeto_selecionado = icone
-        document.querySelector(tipo == 'O' ? `[tipo="${dado}"]` : `[tipo="${tipo}"]`).classList.add(tipo == 'O' ? opcoes['O'][1] : opcoes[tipo][1], 'text-white')
+        document.querySelector(tipo == 'O' ? `[tipo="${dado}"]` : `[tipo="${tipo}"]`).classList.add(tipo == 'O' ? atividades['O'][1] : atividades[tipo][1], 'text-white')
     }
 
-    ativarOpcao = (opcao) => {
-        tipo_selecionado == '' ? alert('Selecione um tipo') : configurarOpcao(opcao, tipo_selecionado)
+    ativarAtividade = (coordenada) => {
+        tipo_selecionado == '' ? alert('Selecione um tipo') : configurarAtividade(coordenada, tipo_selecionado)
     }
 
-    configurarOpcao = (opcao, tipo) => {
-        criarPropriedadesOpcao(opcao, tipo)
-        atualizarMenuEdicao(opcao, tipo)
+    configurarAtividade = (coordenada, tipo) => {
+        criarPropriedadesAtividade(coordenada, tipo)
+        atualizarMenuEdicao(coordenada[0]+coordenada[1], tipo)
     }
 
-    criarPropriedadesOpcao = (opcao, tipo) => {
-        const elemento_opcao = document.getElementById(opcao)
-        elemento_opcao.innerHTML = ''
-        elemento_opcao.classList.add(tipo == 'O' ? 'bg-white' : opcoes[tipo][1], 'opcao_selecionada')
-        elemento_opcao.setAttribute('onclick', `atualizarMenuEdicao('${opcao}', '${tipo}')`)
-        elemento_opcao.setAttribute('title', `${opcoes[tipo][2]}`)
-        elemento_opcao.setAttribute('duracao', tipo == 'O' ? 0 : '')
-        elemento_opcao.setAttribute('tipo_opcao', tipo)
-        elemento_opcao.setAttribute('icone', tipo == 'O' ? objeto_selecionado : opcoes[tipo][0])
+    criarPropriedadesAtividade = (coordenada, tipo) => {
+        const identificador = coordenada[0]+coordenada[1]
+
+        const elemento_atividade = document.getElementById(identificador)
+
+        elemento_atividade.innerHTML = ''
+        elemento_atividade.classList.add(tipo == 'O' ? 'bg-white' : atividades[tipo][1], 'atividade_selecionada')
+        elemento_atividade.setAttribute('onclick', `atualizarMenuEdicao('${identificador}', '${tipo}')`)
+        elemento_atividade.setAttribute('title', `${atividades[tipo][2]}`)
+        elemento_atividade.setAttribute('duracao', tipo == 'O' ? 0 : '')
+        elemento_atividade.setAttribute('linha', coordenada[0])
+        elemento_atividade.setAttribute('coluna', coordenada[1])
+        elemento_atividade.setAttribute('tipo_atividade', tipo)
+        elemento_atividade.setAttribute('icone', tipo == 'O' ? objeto_selecionado : atividades[tipo][0])
 
         const i = document.createElement('i')
-        i.setAttribute('class', tipo == 'O' ? objeto_selecionado : opcoes[tipo][0])
-        elemento_opcao.append(i)
+        i.setAttribute('class', tipo == 'O' ? objeto_selecionado : atividades[tipo][0])
+        elemento_atividade.append(i)
 
         if (tipo == 'D') {
-            elemento_opcao.setAttribute('direcao', 'DC')
-            document.getElementById('direcao_opcao_selecionada').disabled = true
+            elemento_atividade.setAttribute('direcao', 'DC')
+            document.getElementById('direcao_atividade_selecionada').disabled = true
         } else {
-            elemento_opcao.setAttribute('direcao', 'C')
-            document.getElementById('direcao_opcao_selecionada').disabled = false
+            elemento_atividade.setAttribute('direcao', 'C')
+            document.getElementById('direcao_atividade_selecionada').disabled = false
             adicionar_formulas()
         }
     }
 
-    atualizarMenuEdicao = (opcao, tipo) => {
-        const elemento_opcao = document.getElementById(opcao)
-        const nome_opcao_selecionada = document.getElementById('nome_opcao_selecionada')
-        const direcao_opcao_selecionada = document.getElementById('direcao_opcao_selecionada')
-        const duracao_opcao_selecionada = document.getElementById('duracao_opcao_selecionada')
-        const remover_opcao = document.getElementById('remover_opcao')
+    atualizarMenuEdicao = (atividade, tipo) => {
+        const elemento_atividade = document.getElementById(atividade)
+        const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
+        const direcao_atividade_selecionada = document.getElementById('direcao_atividade_selecionada')
+        const duracao_atividade_selecionada = document.getElementById('duracao_atividade_selecionada')
+        const remover_atividade = document.getElementById('remover_atividade')
 
-        nome_opcao_selecionada.value = elemento_opcao.getAttribute('title')
-        nome_opcao_selecionada.setAttribute('oninput', `atualizarAtributoOpcao('${opcao}', 'nome_opcao_selecionada', 'title')`)
-        duracao_opcao_selecionada.setAttribute('oninput', `atualizarAtributoOpcao('${opcao}', 'duracao_opcao_selecionada', 'duracao')`)
+        nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
+        nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
+        duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
 
-        direcao_opcao_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoOpcao('${opcao}', 'direcao_opcao_selecionada', 'direcao')`)
+        direcao_atividade_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoAtividade('${atividade}', 'direcao_atividade_selecionada', 'direcao')`)
 
-        remover_opcao.classList.remove('disabled')
-        remover_opcao.setAttribute('onclick', `removerOpcao('${opcao}', '${tipo}')`)
+        remover_atividade.classList.remove('disabled')
+        remover_atividade.setAttribute('onclick', `removerAtividade('${atividade}', '${tipo}')`)
 
-        desmarcar_opcoes()
-        marcar_opcao(opcao)
+        desmarcarAtividades()
+        marcarAtividade(atividade)
     }
 
     adicionar_formulas = () => {
 
     }
 
-    removerOpcao = (opcao, tipo) => {
-        const opcao_marcada = document.getElementById(opcao)
-        document.getElementById('remover_opcao').classList.add('disabled')
+    removerAtividade = (atividade, tipo) => {
+        const atividade_marcada = document.getElementById(atividade)
+        document.getElementById('remover_atividade').classList.add('disabled')
         
-        opcao_marcada.innerHTML = '*'
-        opcao_marcada.classList.remove('opcao_marcada', opcoes[tipo][1], 'opcao_selecionada')
-        opcao_marcada.setAttribute('onclick', `ativarOpcao('${opcao}')`)
+        atividade_marcada.innerHTML = '*'
+        atividade_marcada.classList.remove('atividade_marcada', atividades[tipo][1], 'atividade_selecionada')
+        atividade_marcada.setAttribute('onclick', `ativarAtividade('${atividade}')`)
     }
 
-    atualizarAtributoOpcao = (opcao, elemento, atributo) => {
-        const elemento_opcao = document.getElementById(opcao)
+    atualizarAtributoAtividade = (atividade, elemento, atributo) => {
+        const elemento_atividade = document.getElementById(atividade)
         const campo = document.getElementById(elemento)
 
-        elemento_opcao.setAttribute(atributo, campo.value)
+        elemento_atividade.setAttribute(atributo, campo.value)
     }
 
-    atualizarAtributoSelecaoOpcao = (opcao, elemento, atributo) => {
-        const elemento_opcao = document.getElementById(opcao)
+    atualizarAtributoSelecaoAtividade = (atividade, elemento, atributo) => {
+        const elemento_atividade = document.getElementById(atividade)
         
-        let opcaoSelecionada = document.getElementById(elemento)
-        let valorSelecionado = opcaoSelecionada.options[opcaoSelecionada.selectedIndex].value
+        let atividadeSelecionada = document.getElementById(elemento)
+        let valorSelecionado = atividadeSelecionada.options[atividadeSelecionada.selectedIndex].value
         
 
-        elemento_opcao.setAttribute(atributo, valorSelecionado)
-        elemento_opcao.innerHTML = `<i class="${rotas[valorSelecionado]} text-white"></i>`
+        elemento_atividade.setAttribute(atributo, valorSelecionado)
+        elemento_atividade.innerHTML = `<i class="${rotas[valorSelecionado]} text-white"></i>`
     }
 
-    marcar_opcao = (opcao) => {
-        opcao_marcada = document.getElementById(opcao)
+    marcarAtividade = (atividade) => {
+        atividade_marcada = document.getElementById(atividade)
 
-        opcao_marcada.classList.toggle('opcao_marcada')
+        atividade_marcada.classList.toggle('atividade_marcada')
 
-        document.getElementById('duracao_opcao_selecionada').value = opcao_marcada.getAttribute('duracao')
-        document.getElementById('direcao_opcao_selecionada').value = opcao_marcada.getAttribute('direcao')
-        document.getElementById('tipo_opcao_selecionada').value = opcoes[opcao_marcada.getAttribute('tipo_opcao')][2]
+        document.getElementById('duracao_atividade_selecionada').value = atividade_marcada.getAttribute('duracao')
+        document.getElementById('direcao_atividade_selecionada').value = atividade_marcada.getAttribute('direcao')
+        document.getElementById('tipo_atividade_selecionada').value = atividades[atividade_marcada.getAttribute('tipo_atividade')][2]
 
-        let direcao = document.getElementById('direcao_opcao_selecionada')
-        opcao_marcada.getAttribute('tipo_opcao') == 'D' ? direcao.disabled = true : direcao.disabled = false
+        let direcao = document.getElementById('direcao_atividade_selecionada')
+        atividade_marcada.getAttribute('tipo_atividade') == 'D' ? direcao.disabled = true : direcao.disabled = false
 
-        document.querySelector(`option[value="${opcao_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+        document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
     }
 
-    desmarcar_opcoes = () => {
+    desmarcarAtividades = () => {
         try {
-            document.querySelector('.opcao_marcada').classList.toggle('opcao_marcada')
+            document.querySelector('.atividade_marcada').classList.toggle('atividade_marcada')
         } catch (error) {
             return
         }
     }
 
     selecionarVersao = () => { 
-        let opcaoSelecionada = document.getElementById('versao')
-        let valorSelecionado = opcaoSelecionada.options[opcaoSelecionada.selectedIndex].value
+        let atividadeSelecionada = document.getElementById('versao')
+        let valorSelecionado = atividadeSelecionada.options[atividadeSelecionada.selectedIndex].value
 
         window.location.href = `http://127.0.0.1:9000/ambiente/${id_ambiente}/${valorSelecionado}`
     }
@@ -393,29 +395,31 @@
             }
         }
 
-        const opcoes_selecionadas = document.querySelectorAll('.opcao_selecionada')
+        const atividades_selecionadas = document.querySelectorAll('.atividade_selecionada')
         let dados = {}
-        let dict_opcoes = {}
+        let dict_atividades = {}
 
         const ambiente = {'ambiente': `{{ ambiente.id }}`}
         dados = Object.assign(dados, ambiente)
 
-        opcoes_selecionadas.forEach(opcao => {
-            let id = `${ opcao.getAttribute('id') }`
+        atividades_selecionadas.forEach(atividade => {
+            let id = `${ atividade.getAttribute('id') }`
 
             let op = {
-                    'nome': opcao.getAttribute('title'),
-                    'direcao': opcao.getAttribute('direcao'),
-                    'duracao': opcao.getAttribute('duracao'),
-                    'tipo': opcao.getAttribute('tipo_opcao'),
-                    'icone': opcao.getAttribute('icone')
+                    'atividade': atividade.getAttribute('title'),
+                    'linha': atividade.getAttribute('linha'),
+                    'coluna': atividade.getAttribute('coluna'),
+                    'direcao': atividade.getAttribute('direcao'),
+                    'duracao': atividade.getAttribute('duracao'),
+                    'tipo': atividade.getAttribute('tipo_atividade'),
+                    'icone': atividade.getAttribute('icone')
                 }
 
-            dict_opcoes[id] = op
+            dict_atividades[id] = op
         })
 
-        dict_opcoes = {'opcoes': dict_opcoes}
-        dados = Object.assign(dados, dict_opcoes)
+        dict_atividades = {'atividades': dict_atividades}
+        dados = Object.assign(dados, dict_atividades)
 
         xhttp.send("dados=" + JSON.stringify(dados))
     }
@@ -465,7 +469,7 @@
 
     /* -> Carregar ambiente <--------------------------------------------------- */
 
-    carregar_opcoes()
+    carregar_atividades()
     carregar_predefinicoes()
 </script>
 

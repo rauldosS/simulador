@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Ambiente, Opcao
+from .models import Ambiente, Atividade
 from django.http import HttpResponseRedirect, JsonResponse
 from django.db.models import Count
 import json
@@ -18,21 +18,21 @@ def inicio(request):
 def ambiente(request, id=0, versao=0):
     versao_carregada = versao
     ambiente = Ambiente.objects.get(id=id)
-    opcoes = Opcao.objects.filter(ambiente=ambiente, versao=versao)
+    atividades = Atividade.objects.filter(ambiente=ambiente, versao=versao)
 
-    versoes = Opcao.objects.filter(ambiente=ambiente).order_by('-versao')
-    versoes_opcoes = {}
+    versoes = Atividade.objects.filter(ambiente=ambiente).order_by('-versao')
+    versoes_atividades = {}
     
     for versao in versoes:
-        versoes_opcoes.update({versao.versao: 0})
+        versoes_atividades.update({versao.versao: 0})
 
     for versao in versoes:
-        versoes_opcoes[versao.versao] = versoes_opcoes[versao.versao] + 1
+        versoes_atividades[versao.versao] = versoes_atividades[versao.versao] + 1
 
     dados = {
         'ambiente': ambiente,
-        'opcoes': opcoes,
-        'versoes': versoes_opcoes,
+        'atividades': atividades,
+        'versoes': versoes_atividades,
         'versao_carregada': versao_carregada,
         'formula': ''
     }
@@ -43,26 +43,29 @@ def salvarAmbiente(request):
     if request.method == 'POST':
         try:
             dados = json.loads(request.POST.get('dados', ''))
-            
-            ambiente = Ambiente.objects.get(id=dados['ambiente'])
+
+            ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
             ambiente.versao = ambiente.versao + 1
             ambiente.save()
 
-            atualizarOpcoes(ambiente, dados['opcoes'])
+            atualizarAtividades(ambiente, dados['atividades'])
 
             return JsonResponse({'versao': ambiente.versao})
         except Exception as e:
             print(e)
             return JsonResponse({'erro': 'erro'})
 
-def atualizarOpcoes(ambiente, opcoes):
-    for opcao, dados in opcoes.items():
-        registrarOpcao(ambiente, opcao, dados, ambiente.versao)
+def atualizarAtividades(ambiente, atividades):
+    for atividade, dados in atividades.items():
+        print(dados)
+        registrarAtividade(ambiente, atividade, dados, ambiente.versao, dados.linha, dados.coluna)
 
-def registrarOpcao(ambiente, opcao, dados, versao):
-    op = Opcao.objects.create(
+def registrarAtividade(ambiente, atividade, dados, versao, linha, coluna):
+    op = Atividade.objects.create(
         ambiente=ambiente,
-        opcao=opcao,
+        atividade=atividade,
+        linha=linha,
+        coluna=coluna,
         nome=dados['nome'],
         direcao=dados['direcao'],
         duracao=int(dados['duracao']),

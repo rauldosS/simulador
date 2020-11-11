@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Cenario
-from ambiente.models import Ambiente, Opcao, Decisao, Participante
+from ambiente.models import Ambiente, Decisao, Participante
 
 # Create your views here.
 def inicio(request):

@@ -1,5 +1,5 @@
 from django.db import models
-from ambiente.models import Ambiente, Opcao, Decisao, Participante
+from ambiente.models import Ambiente,  Decisao, Participante
 
 # Create your models here.
 class Cenario(models.Model):

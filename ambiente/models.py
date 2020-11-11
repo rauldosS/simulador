@@ -27,7 +27,7 @@ class Ambiente(models.Model):
         verbose_name_plural = 'Ambientes'
         ordering = ('id', 'nome', 'data')
 
-class Opcao(models.Model):
+class Atividade(models.Model):
     DIRECAO_CHOICES = (
         ('C', 'Cima'),
         ('D', 'Direita'),
@@ -47,21 +47,22 @@ class Opcao(models.Model):
 
     ambiente = models.ForeignKey(Ambiente, on_delete=models.CASCADE)
     versao = models.IntegerField()
-    opcao = models.CharField('Opção', max_length=10)
+    linha = models.CharField('linha', max_length=10)
+    coluna = models.CharField('coluna', max_length=10)
     icone = models.CharField(max_length=255, blank=True, null=True)
-    nome = models.CharField('Nome', max_length=255)
+    atividade = models.CharField('Nome', max_length=255)
     direcao = models.CharField('Direcao', max_length=2, choices=DIRECAO_CHOICES, blank=True, null=True)
     duracao = models.IntegerField('Tempo em segundos')
     tipo = models.CharField('Tipo de opção', max_length=1, choices=TIPO_CHOICES)
     formula = models.CharField('Fórmula', max_length=1000)
     
     def __str__(self):
-        return f'{self.id} - {self.opcao} - {self.nome}'
+        return f'{self.id} - ({self.linha}-{self.coluna}) - {self.nome}'
 
     class Meta:
-        verbose_name = 'Opção'
-        verbose_name_plural = 'Opções'
-        ordering = ('id', 'opcao', 'ambiente')
+        verbose_name = 'Atividade'
+        verbose_name_plural = 'Atividades'
+        ordering = ('id', 'linha', 'ambiente')
 
 class Participante(models.Model):
     SEXO_CHOICES = (
@@ -84,13 +85,13 @@ class Participante(models.Model):
 
 
 class Decisao(models.Model):
-    opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE)
+    atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
     formula = models.CharField('Fórmula', max_length=255)
 
     def __str__(self):
-        return f'{self.id} - {self.opcao} - {self.formula}'
+        return f'{self.id} - {self.atividade} - {self.formula}'
 
     class Meta:
         verbose_name = 'Decisão'
         verbose_name_plural = 'Decisões'
-        ordering = ('id', 'opcao', 'formula')
+        ordering = ('id', 'atividade', 'formula')
