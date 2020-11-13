@@ -41,32 +41,45 @@ def ambiente(request, id=0, versao=0):
 
 def salvarAmbiente(request):
     if request.method == 'POST':
-        try:
-            dados = json.loads(request.POST.get('dados', ''))
 
-            ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
-            ambiente.versao = ambiente.versao + 1
-            ambiente.save()
+        dados = json.loads(request.POST.get('dados', ''))
 
-            atualizarAtividades(ambiente, dados['atividades'])
+        print(dados)
 
-            return JsonResponse({'versao': ambiente.versao})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'erro': 'erro'})
+        ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
+        ambiente.versao = ambiente.versao + 1
+        ambiente.save()
+
+        atualizarAtividades(ambiente, dados['atividades'])
+
+        return JsonResponse({'versao': ambiente.versao})
+        # try:
+        #     dados = json.loads(request.POST.get('dados', ''))
+
+        #     print(f'linha: { dados["linha"] }')
+
+        #     ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
+        #     ambiente.versao = ambiente.versao + 1
+        #     ambiente.save()
+
+        #     atualizarAtividades(ambiente, dados['atividades'])
+
+        #     return JsonResponse({'versao': ambiente.versao})
+        # except Exception as e:
+        #     print(e)
+        #     return JsonResponse({'erro': 'erro'})
 
 def atualizarAtividades(ambiente, atividades):
     for atividade, dados in atividades.items():
         print(dados)
-        registrarAtividade(ambiente, atividade, dados, ambiente.versao, dados.linha, dados.coluna)
+        registrarAtividade(ambiente, atividade, dados, ambiente.versao)
 
-def registrarAtividade(ambiente, atividade, dados, versao, linha, coluna):
+def registrarAtividade(ambiente, atividade, dados, versao):
     op = Atividade.objects.create(
         ambiente=ambiente,
         atividade=atividade,
-        linha=linha,
-        coluna=coluna,
-        nome=dados['nome'],
+        linha=dados['linha'],
+        coluna=dados['coluna'],
         direcao=dados['direcao'],
         duracao=int(dados['duracao']),
         tipo=dados['tipo'],

@@ -57,7 +57,7 @@ class Atividade(models.Model):
     formula = models.CharField('Fórmula', max_length=1000)
     
     def __str__(self):
-        return f'{self.id} - ({self.linha}-{self.coluna}) - {self.nome}'
+        return f'{self.id} - ({self.linha}-{self.coluna}) - {self.atividade}'
 
     class Meta:
         verbose_name = 'Atividade'

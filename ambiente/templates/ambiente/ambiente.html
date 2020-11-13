@@ -202,6 +202,8 @@
             atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
             atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
             atividade_documento.setAttribute('title', '{{ atividade.nome }}')
+            atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
+            atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
@@ -227,10 +229,11 @@
         ambiente.append(div_coluna)
 
         for (let linha = 0; linha <= 25; linha++) {
+            console.log(linha, coluna)
             const atividade = document.createElement('div')
             atividade.setAttribute('class', 'align-self-start atividade text-center')
-            atividade.setAttribute('id', `${ linha }${ coluna }`)
-            atividade.setAttribute('onclick', `ativarAtividade(['${ linha }', '${ coluna }'])`)
+            atividade.setAttribute('id', `${ linha < 10 ? '0' + linha : linha }${ coluna < 10 ? '0' + coluna : coluna }`)
+            atividade.setAttribute('onclick', `ativarAtividade(['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
 
             atividade.textContent = '*'
 
@@ -420,6 +423,8 @@
 
         dict_atividades = {'atividades': dict_atividades}
         dados = Object.assign(dados, dict_atividades)
+
+        console.log(dict_atividades)
 
         xhttp.send("dados=" + JSON.stringify(dados))
     }
