@@ -4,6 +4,7 @@ from django.utils import timezone
 # Create your models here.
 class PredefinicaoSimulacao(models.Model):
     nome = models.CharField(max_length=255)
+    participante = models.TextField()
     
     def __str__(self):
         return f'{self.id} - {self.nome}'
@@ -27,12 +28,26 @@ class Ambiente(models.Model):
         verbose_name_plural = 'Ambientes'
         ordering = ('id', 'nome', 'data')
 
+class MapaAmbiente(models.Model):
+    ambiente = models.ForeignKey(Ambiente, on_delete=models.CASCADE)
+    versao = models.IntegerField()
+    mapa = models.TextField()
+
+    def __str__(self):
+        return f'{self.id} - {self.ambiente} - {self.versao}'
+
+    class Meta:
+        verbose_name = 'Mapa ambiente'
+        verbose_name_plural = 'Mapas ambientes'
+        ordering = ('id', 'ambiente', 'versao')
+
 class Atividade(models.Model):
     DIRECAO_CHOICES = (
         ('C', 'Cima'),
         ('D', 'Direita'),
         ('B', 'Baixo'),
         ('E', 'Esquerda'),
+        ('F', 'Fim'),
         ('DC', 'Decisão'),
     )
 

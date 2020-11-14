@@ -1,0 +1,317 @@
+{% extends "base/index.html" %}
+
+{% block titulo %}Ambiente{% endblock %}
+
+{% block content %}
+<style>
+    .atividade {
+        border: 1px solid #e0e0e0;
+        width: 25px;
+        height: 25px;
+    }
+
+    .menu {
+        border: 1px solid;
+        min-width: 25px;
+        min-height: 25px;
+    }
+
+    .atividade_marcada {
+        outline: 2px #FF0000 solid;
+        outline-style: dashed;
+    }
+
+    #div_formula {
+        display: none;
+    }
+
+    .coluna-mapa {
+        /* min-width: 2.5%;
+        min-height: 2.5%; */
+    }
+</style>
+
+<div class="container mt-3">
+    <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
+        <div class='h-100 overflow-y-auto p-3'>
+            <div class='p-2 d-flex border-bottom mb-2 align-items-center'>
+                    <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
+                    <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+                <div class="d-flex flex-end w-100 row">
+                    <span class="badge badge-primary" style="height: min-content;">{{ ambiente.predefinicao.nome }}</span>
+                    <div class="input-group mb-3 col-3">
+                        <div class="input-group-prepend" style="height: 38px;">
+                          <label class="input-group-text" for="versao">Versão</label>
+                        </div>
+                        <select class="custom-select" id="versao" onchange="selecionarVersao(this)">
+                            <option value="{{ versao_carregada }}">{{ versao_carregada }}</option>
+                            {% for versao in versoes %}
+                                {% if not versao_carregada == versao %}
+                                    <option value="{{ versao }}">{{ versao }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <!-- Menu de edição -->
+                    <div class="col-2">
+                        <p class="pt-3">Opções</p>
+                        <div class="list-group">
+                            <a onclick="iniciarSimulacao(this)" class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Iniciar</a>
+                            <a onclick="pausarSimulacao(this)" class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Pausar</a>
+                            <a onclick="pararSimulacao(this)" class="list-group-item list-group-item-action"><i class="far fa-stop-circle mr-2"></i>Parar</a>
+                        </div>
+                        <p class="pt-3">Configurações</p>
+                        <div class="form-group">
+                            <label for="quantidade_participantes">Número de participantes</label>
+                            <input id="quantidade_participantes" type="number" class="form-control" placeholder="Número de participantes da simulação">
+                        </div>
+                        <p class="pt-3">Atividade</p>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group">
+                            <label for="nome_atividade_selecionada">Opção</label>
+                            <input id="nome_atividade_selecionada" type="text" class="form-control" placeholder="Nome opção" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="duracao_atividade_selecionada">Duração (segundos)</label>
+                            <input id="duracao_atividade_selecionada" type="number" class="form-control" placeholder="Em segundos" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="direcao_atividade_selecionada">Tipo</label>
+                            <input id="direcao_atividade_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="formula_atividade_selecionada">Fórmula</label>
+                            <input id="formula_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                        </div>
+                    </div>
+                    <!-- Mapa do ambiente -->
+                    <div class="row col-8">
+                        <div class="row col-12">
+                            <div class="col-12">
+                                <p class="pt-3">Mapa do ambiente</p>
+                            </div>
+                            <div class="col-12 d-flex" id="ambiente">
+                            </div>
+                        </div>
+                        
+                        <div  class="col-12">
+                            <form id="div_formula" action="">
+                                <div class="form-group">
+                                    <label for="formula">Fórmula</label>
+                                    <textarea class="form-control" id="formula" rows="3"></textarea>
+                                    <div class="p-3 text-right">
+                                        <a id="btn_salvar_formula" onclick="salvarFormula()" class="btn btn-success text-white">Salvar Fórmula</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const id_ambiente = '{{ ambiente }}'
+    const ambiente = document.getElementById('ambiente')
+
+    const atividades = {
+        'I': ['Início'],
+        'R': ['Rota'],
+        'D': ['Decisão'],
+        'P': ['Parada'],
+        'F': ['Fim'],
+        'O': ['Objeto'],
+    }
+    const rotas = {
+        'S': 'Selecionar',
+        'C': 'fas fa-arrow-up',
+        'D': 'fas fa-arrow-right',
+        'B': 'fas fa-arrow-down',
+        'E': 'fas fa-arrow-left',
+        'DC': 'fas fa-question-circle',
+    }
+
+    let tipo_selecionado = ''
+    let objeto_selecionado = ''
+    let mapa_simulacao = ''
+
+    /* Carregar ambiente de simulação */
+
+    carregar_atividades = () => {
+        let atividade_documento = ''
+        let i = ''
+        let icone = ''
+
+        {% for atividade in atividades %}
+            atividade_documento = document.getElementById('{{ atividade.atividade }}')
+
+            atividade_documento.innerHTML = ''
+            atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
+            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
+            atividade_documento.setAttribute('title', '{{ atividade.nome }}')
+            atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
+            atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
+            atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
+            atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
+            atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
+            atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
+
+            i = document.createElement('i')
+            
+            if ('{{ atividade.tipo }}' == 'O') {
+                i.setAttribute('class', '{{ atividade.icone }}')
+            } else {
+                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}']} text-white` : atividades['{{ atividade.tipo }}'][0])   
+            }
+            
+            atividade_documento.append(i)
+        {% endfor %}
+    }
+
+    for (let coluna = 0; coluna <= 40; coluna++) {
+        const div_coluna = document.createElement('div') 
+
+        div_coluna.setAttribute('class', 'flex-row coluna-mapa')
+
+        ambiente.append(div_coluna)
+
+        for (let linha = 0; linha <= 25; linha++) {
+            const atividade = document.createElement('div')
+            atividade.setAttribute('class', 'align-self-start atividade text-center')
+            atividade.setAttribute('id', `${ linha < 10 ? '0' + linha : linha }${ coluna < 10 ? '0' + coluna : coluna }`)
+            atividade.setAttribute('onclick', `ativarAtividade(['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
+
+            atividade.textContent = ''
+
+            div_coluna.append(atividade)
+        }   
+    }
+
+    /* Funções de seleção de atividade */
+
+    atualizarMenuEdicao = (atividade, tipo) => {
+        const elemento_atividade = document.getElementById(atividade)
+        const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
+        const direcao_atividade_selecionada = document.getElementById('direcao_atividade_selecionada')
+        const duracao_atividade_selecionada = document.getElementById('duracao_atividade_selecionada')
+
+        nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
+        nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
+        duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
+
+        direcao_atividade_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoAtividade('${atividade}', 'direcao_atividade_selecionada', 'direcao')`)
+
+        desmarcarAtividades()
+        marcarAtividade(atividade)
+    }
+    
+    marcarAtividade = (atividade) => {
+        atividade_marcada = document.getElementById(atividade)
+
+        atividade_marcada.classList.toggle('atividade_marcada')
+
+        document.getElementById('duracao_atividade_selecionada').value = atividade_marcada.getAttribute('duracao')
+        document.getElementById('direcao_atividade_selecionada').value = atividade_marcada.getAttribute('direcao')
+        document.getElementById('tipo_atividade_selecionada').value = atividades[atividade_marcada.getAttribute('tipo_atividade')][2]
+
+        let direcao = document.getElementById('direcao_atividade_selecionada')
+        atividade_marcada.getAttribute('tipo_atividade') == 'D' ? direcao.disabled = true : direcao.disabled = false
+
+        document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+    }
+
+    desmarcarAtividades = () => {
+        try {
+            document.querySelector('.atividade_marcada').classList.toggle('atividade_marcada')
+        } catch (error) {
+            return
+        }
+    }
+
+    selecionarVersao = () => { 
+        let atividadeSelecionada = document.getElementById('versao')
+        let valorSelecionado = atividadeSelecionada.options[atividadeSelecionada.selectedIndex].value
+
+        window.location.href = `http://127.0.0.1:9000/cenario/cenario/${id_ambiente}/${valorSelecionado}`
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    /* -> Simulação <--------------------------------------------------- */
+    
+    iniciarSimulacao = (elemento) => {
+        elemento.classList.toggle('active')
+        console.log('Vai começar')
+
+        const quantidade_participantes = document.getElementById('quantidade_participantes').value
+
+        if (tipo_ambiente == 'COVID') {
+            instanciarParticipanteCOVID(quantidade_participantes)
+        }
+    }
+
+    /* -> Participantes <--------------------------------------------------- */
+
+    const tipo_ambiente = '{{ tipo_ambiente }}'
+    let participante = ''
+    let participantes = []
+
+    nomes = ["Miguel", "Davi", "Arthur", "Pedro", "Gabriel", "Bernardo", "Lucas", "Matheus", "Rafael", "Heitor", "Enzo", "Guilherme", "Nicolas", "Lorenzo", "Gustavo", "Felipe", "Samuel", "João Pedro", "Daniel", "Vitor", "Leonardo", "Henrique", "Theo", "Murilo", "Eduardo", "Pedro Henrique", "Pietro", "Cauã", "Isaac", "Caio", "Vinicius", "Benjamin", "João", "Lucca", "João Miguel", "Bryan", "Joaquim", "João Vitor", "Thiago", "Antônio", "Davi Lucas", "Francisco", "Enzo Gabriel", "Bruno", "Emanuel", "João Gabriel", "Ian", "Davi Luiz", "Rodrigo", "Otávio", "Sophia", "Alice", "Julia", "Isabella", "Manuela", "Laura", "Luiza", "Valentina", "Giovanna", "Maria Eduarda", "Helena", "Beatriz", "Maria Luiza", "Lara", "Mariana", "Nicole", "Rafaela", "Heloísa", "Isadora", "Lívia", "Maria Clara", "Ana Clara", "Lorena", "Gabriela", "Yasmin", "Isabelly", "Sarah", "Ana Julia", "Letícia", "Ana Luiza", "Melissa", "Marina", "Clara", "Cecília", "Esther", "Emanuelly", "Rebeca", "Ana Beatriz", "Lavínia", "Vitória", "Bianca", "Catarina", "Larissa", "Maria Fernanda", "Fernanda", "Amanda", "Alícia", "Carolina"]
+    
+    instanciarParticipanteCOVID = (quantidade_participantes) => {
+        class Participante {
+            constructor(nome, estado) {
+                this.nome = nome
+                this.estado = estado
+            }
+        }
+
+        const estado_paciente = ['Saudável', 'Infeccioso', 'Exposto']
+        const estados = {
+            'Saudável': 'bg-primary-bootstrap',
+            'Infeccioso': 'bg-danger',
+            'Exposto': 'bg-warning'
+        }
+
+        for (i = 0; i < quantidade_participantes; i++) {
+            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)])
+            participantes.push(p)
+
+            console.log(participantes)
+        }
+    }
+
+    function getInteiroAleatorio(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    /* -> Carregar ambiente <--------------------------------------------------- */
+
+    carregar_atividades()
+</script>
+
+{% endblock %}

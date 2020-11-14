@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Cenario
-from ambiente.models import Ambiente, Decisao, Participante
+from ambiente.models import Ambiente, Decisao, Participante, Atividade
 
 # Create your views here.
 def inicio(request):
@@ -26,11 +26,30 @@ def inicio(request):
 
     return render(request, 'cenario/inicio.html', dados)
 
-def cenario(request, id):
+def cenario(request, id=0, versao=0):
+    versao_carregada = versao
     cenario = Cenario.objects.get(id=id)
+    ambiente = Ambiente.objects.get(id=cenario.ambiente.id)
+    atividades = Atividade.objects.filter(ambiente=ambiente, versao=versao)
+
+    versoes = Atividade.objects.filter(ambiente=ambiente).order_by('-versao')
+    versoes_atividades = {}
+    
+    for versao in versoes:
+        versoes_atividades.update({versao.versao: 0})
+
+    for versao in versoes:
+        versoes_atividades[versao.versao] = versoes_atividades[versao.versao] + 1
 
     dados = {
-        'cenario': cenario
+        'cenario': cenario,
+        'ambiente': cenario.ambiente.id,
+        'atividades': atividades,
+        'versoes': versoes_atividades,
+        'versao_carregada': versao_carregada,
+        'tipo_ambiente': ambiente.predefinicao.nome
     }
+
+    print(dados)
 
     return render(request, 'cenario/cenario.html', dados)

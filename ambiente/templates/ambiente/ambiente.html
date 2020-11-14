@@ -89,6 +89,7 @@
                                   <option value="B">Baixo</option>
                                   <option value="E">Esquerda</option>
                                   <option value="DC">Decisão</option>
+                                  <option value="F">Fim</option>
                                 </select>
                             </div>
                         </div>
@@ -184,11 +185,14 @@
         'D': 'fas fa-arrow-right',
         'B': 'fas fa-arrow-down',
         'E': 'fas fa-arrow-left',
+        'F': 'fas fa-times-circle',
         'DC': 'fas fa-question-circle',
     }
 
     let tipo_selecionado = ''
     let objeto_selecionado = ''
+    let mapa_simulacao = ''
+    let direcao_atividade_anterior = ''
 
     carregar_atividades = () => {
         let atividade_documento = ''
@@ -229,7 +233,6 @@
         ambiente.append(div_coluna)
 
         for (let linha = 0; linha <= 25; linha++) {
-            console.log(linha, coluna)
             const atividade = document.createElement('div')
             atividade.setAttribute('class', 'align-self-start atividade text-center')
             atividade.setAttribute('id', `${ linha < 10 ? '0' + linha : linha }${ coluna < 10 ? '0' + coluna : coluna }`)
@@ -280,6 +283,9 @@
 
         if (tipo == 'D') {
             elemento_atividade.setAttribute('direcao', 'DC')
+            document.getElementById('direcao_atividade_selecionada').disabled = true
+        } else if (tipo == 'F') {
+            elemento_atividade.setAttribute('direcao', 'F')
             document.getElementById('direcao_atividade_selecionada').disabled = true
         } else {
             elemento_atividade.setAttribute('direcao', 'C')
@@ -374,6 +380,58 @@
         objeto_selecionado = icone
     }
 
+    gerarMapaSimulacao = (inicio) => {
+        let tipo = inicio.getAttribute('tipo_atividade')
+
+        console.log(inicio)
+        console.log(tipo)
+
+        let linha = parseInt(inicio.getAttribute('linha'))
+        let coluna = parseInt(inicio.getAttribute('coluna'))
+        let direcao = inicio.getAttribute('direcao')
+
+        let id_proxima_atividade = ''
+        let proxima_atividade = ''
+
+        if (tipo == 'D') {
+            mapaAtividadeDecisao(linha, coluna, direcao, direcao_atividade_anterior)
+        } else if (tipo != 'F') {
+            direcao == 'C' ? linha = linha - 1 :
+                direcao == 'D' ? coluna = coluna + 1 :
+                    direcao == 'B' ? linha = linha + 1 :
+                        direcao == 'E' ? coluna = coluna - 1 : coluna = coluna
+
+            linha < 10 ? linha = `0${linha}` : linha
+            coluna < 10 ? coluna = `0${coluna}` : coluna
+
+            id_proxima_atividade = `${linha}${coluna}`
+            proxima_atividade = document.getElementById(id_proxima_atividade)
+            direcao_atividade_anterior = direcao
+
+            gerarMapaSimulacao(proxima_atividade)
+        }
+    }
+
+    mapaAtividadeDecisao = (linha, coluna, direcao, direcao_atividade_anterior) => {
+        let direcoes = [] // cima, direita, baixo, esquerda
+        
+        direcoes[0] = document.getElementById(`${linha < 10 ? `0${linha - 1}` : linha - 1}${coluna < 10 ? `0${coluna}` : coluna}`)
+        direcoes[1] = document.getElementById(`${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna + 1}` : coluna + 1}`)
+        direcoes[2] = document.getElementById(`${linha < 10 ? `0${linha + 1}` : linha + 1}${coluna < 10 ? `0${coluna}` : coluna}`)
+        direcoes[3] = document.getElementById(`${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna - 1}` : coluna - 1}`)
+
+        direcao_atividade_anterior == 'C' ? direcoes[3] = null :
+            direcao_atividade_anterior == 'D' ? direcoes[2] = null :
+                direcao_atividade_anterior == 'B' ? direcoes[0] = null :
+                    direcao_atividade_anterior == 'E' ? direcoes[1] = null : direcoes[3]
+
+        
+                    console.log(direcoes)
+        // const atividade_cima = `${ linha - 1 }
+
+        // console.log(atividade_cima)
+    }
+
     salvarAmbiente = () => {
         var xhttp = new XMLHttpRequest()
         const btn_salvar = document.getElementById('btn_salvar')
@@ -393,7 +451,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 let json = xhttp.response
                 if (json) {
-                    window.location.href = `http://127.0.0.1:9000/ambiente/${id_ambiente}/${json['versao']}`
+                    // window.location.href = `http://127.0.0.1:9000/ambiente/${id_ambiente}/${json['versao']}`
                 }
             }
         }
@@ -404,6 +462,8 @@
 
         const ambiente = {'ambiente': `{{ ambiente.id }}`}
         dados = Object.assign(dados, ambiente)
+
+        const mapa = gerarMapaSimulacao(document.querySelector("[tipo_atividade='I']"))
 
         atividades_selecionadas.forEach(atividade => {
             let id = `${ atividade.getAttribute('id') }`
@@ -423,8 +483,6 @@
 
         dict_atividades = {'atividades': dict_atividades}
         dados = Object.assign(dados, dict_atividades)
-
-        console.log(dict_atividades)
 
         xhttp.send("dados=" + JSON.stringify(dados))
     }
@@ -446,36 +504,9 @@
         return cookieValue;
     }
 
-    /* -> Participantes <--------------------------------------------------- */
-
-    carregar_predefinicoes = () => {
-        const tipo_ambiente = '{{ ambiente.predefinicao.nome }}'
-
-        if (tipo_ambiente == 'COVID') {
-            const estado_paciente = ['Saudável', 'Infeccioso', 'Exposto']
-            const estados = {
-                'Saudável': 'bg-primary-bootstrap',
-                'Infeccioso': 'bg-danger',
-                'Exposto': 'bg-warning'
-            }
-
-            class Participante {
-                constructor(nome, estado) {
-                    this.nome = nome
-                    this.estado = estado
-                }
-            }
-
-            // console.log(estados['Saudável'])
-
-            // const participante = new Participante('Raul', estados[0])
-        }
-    }
-
     /* -> Carregar ambiente <--------------------------------------------------- */
 
     carregar_atividades()
-    carregar_predefinicoes()
 </script>
 
 {% endblock %}

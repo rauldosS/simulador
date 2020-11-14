@@ -27,7 +27,7 @@
                         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                             <div class="card-body p-3">
                                 {% for cenario, dados_cenario in dados.cenarios.items %}
-                                    <a href="{% url 'cenario:cenario' cenario %}">
+                                    <a href="{% url 'cenario:cenario' cenario ambiente %}">
                                         <span class="badge badge-pill badge-primary p-3">{{ cenario }} - {{ dados_cenario}}</span>
                                     </a>
                                 {% endfor %}
