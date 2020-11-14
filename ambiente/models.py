@@ -65,7 +65,7 @@ class Atividade(models.Model):
     linha = models.CharField('linha', max_length=10)
     coluna = models.CharField('coluna', max_length=10)
     icone = models.CharField(max_length=255, blank=True, null=True)
-    atividade = models.CharField('Nome', max_length=255)
+    atividade = models.CharField('Atividade', max_length=255)
     direcao = models.CharField('Direcao', max_length=2, choices=DIRECAO_CHOICES, blank=True, null=True)
     duracao = models.IntegerField('Tempo em segundos')
     tipo = models.CharField('Tipo de opção', max_length=1, choices=TIPO_CHOICES)

@@ -41,10 +41,7 @@ def ambiente(request, id=0, versao=0):
 
 def salvarAmbiente(request):
     if request.method == 'POST':
-
         dados = json.loads(request.POST.get('dados', ''))
-
-        print(dados)
 
         ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
         ambiente.versao = ambiente.versao + 1
@@ -77,7 +74,7 @@ def atualizarAtividades(ambiente, atividades):
 def registrarAtividade(ambiente, atividade, dados, versao):
     op = Atividade.objects.create(
         ambiente=ambiente,
-        atividade=atividade,
+        atividade=dados['atividade'],
         linha=dados['linha'],
         coluna=dados['coluna'],
         direcao=dados['direcao'],

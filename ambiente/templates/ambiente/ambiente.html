@@ -191,7 +191,7 @@
 
     let tipo_selecionado = ''
     let objeto_selecionado = ''
-    let mapa_simulacao = ''
+    let mapa_simulacao = []
     let direcao_atividade_anterior = ''
 
     carregar_atividades = () => {
@@ -200,12 +200,12 @@
         let icone = ''
 
         {% for atividade in atividades %}
-            atividade_documento = document.getElementById('{{ atividade.atividade }}')
+            atividade_documento = document.getElementById('{{ atividade.linha }}{{ atividade.coluna }}')
 
             atividade_documento.innerHTML = ''
             atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
-            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
-            atividade_documento.setAttribute('title', '{{ atividade.nome }}')
+            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('{{ atividade.linha }}{{ atividade.coluna }}', '${'{{ atividade.tipo }}'}')`)
+            atividade_documento.setAttribute('title', '{{ atividade.atividade }}')
             atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
             atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
@@ -383,9 +383,7 @@
     gerarMapaSimulacao = (inicio) => {
         let tipo = inicio.getAttribute('tipo_atividade')
 
-        console.log(inicio)
-        console.log(tipo)
-
+        let id_atividade = parseInt(inicio.getAttribute('id'))
         let linha = parseInt(inicio.getAttribute('linha'))
         let coluna = parseInt(inicio.getAttribute('coluna'))
         let direcao = inicio.getAttribute('direcao')
@@ -394,8 +392,10 @@
         let proxima_atividade = ''
 
         if (tipo == 'D') {
-            mapaAtividadeDecisao(linha, coluna, direcao, direcao_atividade_anterior)
-        } else if (tipo != 'F') {
+            mapaAtividadeDecisao(linha, coluna, direcao, id_atividade, direcao_atividade_anterior)
+        } else if (tipo == 'F') {
+            
+        } else {
             direcao == 'C' ? linha = linha - 1 :
                 direcao == 'D' ? coluna = coluna + 1 :
                     direcao == 'B' ? linha = linha + 1 :
@@ -408,25 +408,48 @@
             proxima_atividade = document.getElementById(id_proxima_atividade)
             direcao_atividade_anterior = direcao
 
+            mapa_simulacao.push({
+                [id_atividade]: {[id_proxima_atividade]: document.getElementById(`${id_proxima_atividade}`).getAttribute('title')}
+            })
+
             gerarMapaSimulacao(proxima_atividade)
         }
+
+        console.log(mapa_simulacao)
     }
 
-    mapaAtividadeDecisao = (linha, coluna, direcao, direcao_atividade_anterior) => {
+    mapaAtividadeDecisao = (linha, coluna, direcao, id_atividade, direcao_atividade_anterior) => {
         let direcoes = [] // cima, direita, baixo, esquerda
         
-        direcoes[0] = document.getElementById(`${linha < 10 ? `0${linha - 1}` : linha - 1}${coluna < 10 ? `0${coluna}` : coluna}`)
-        direcoes[1] = document.getElementById(`${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna + 1}` : coluna + 1}`)
-        direcoes[2] = document.getElementById(`${linha < 10 ? `0${linha + 1}` : linha + 1}${coluna < 10 ? `0${coluna}` : coluna}`)
-        direcoes[3] = document.getElementById(`${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna - 1}` : coluna - 1}`)
+        direcoes[0] = `${linha < 10 ? `0${linha - 1}` : linha - 1}${coluna < 10 ? `0${coluna}` : coluna}`
+        direcoes[1] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna + 1}` : coluna + 1}`
+        direcoes[2] = `${linha < 10 ? `0${linha + 1}` : linha + 1}${coluna < 10 ? `0${coluna}` : coluna}`
+        direcoes[3] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna - 1}` : coluna - 1}`
 
         direcao_atividade_anterior == 'C' ? direcoes[3] = null :
             direcao_atividade_anterior == 'D' ? direcoes[2] = null :
                 direcao_atividade_anterior == 'B' ? direcoes[0] = null :
                     direcao_atividade_anterior == 'E' ? direcoes[1] = null : direcoes[3]
 
-        
-                    console.log(direcoes)
+        let atividades = []
+
+        for (direcao in direcoes) {
+            if (direcoes[direcao]) {
+                const elemento = document.getElementById(direcoes[direcao])
+                if (elemento.classList.contains('atividade_selecionada')) {
+                    atividades.push({
+                        [elemento.getAttribute('id')]: elemento.getAttribute('title')
+                    })
+                }
+            }
+        }
+
+        mapa_simulacao.push({
+            [id_atividade]: atividades
+        })
+        // mapa_simulacao.push({
+        //     [id_atividade]: [{'proxima': id_proxima_atividade}]
+        // })
         // const atividade_cima = `${ linha - 1 }
 
         // console.log(atividade_cima)
