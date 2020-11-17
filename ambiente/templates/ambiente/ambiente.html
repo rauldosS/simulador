@@ -27,6 +27,14 @@
         width: 2.5%;
         height: 2.5%;
     }
+
+    .list-group-item {
+        max-height: 50px
+    }
+
+    a.active:not([href]):hover {
+        color: #FFF;
+    }
 </style>
 
 <div class="container mt-3">
@@ -59,12 +67,14 @@
                     <div class="col-2">
                         <p class="pt-3">Opções</p>
                         <div class="list-group">
-                            <a onclick="selecionarTipo('I')" tipo='I' class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
-                            <a onclick="selecionarTipo('R')" tipo='R' class="list-group-item list-group-item-action"><i class="fas fa-route mr-2"></i>Rota</a>
-                            <a onclick="selecionarTipo('D')" tipo='D' class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
-                            <a onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
-                            <a onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
+                            <a id="selecionar_I" onclick="selecionarTipo('I')" tipo='I' class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
+                            <a id="selecionar_R" onclick="selecionarTipo('R')" tipo='R' class="list-group-item list-group-item-action"><i class="fas fa-route mr-2"></i>Rota</a>
+                            <a id="selecionar_D" onclick="selecionarTipo('D')" tipo='D' class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
+                            <a id="selecionar_P" onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
                             <div class="dropdown-divider"></div>
+                            <a id="vincular" onclick="vincularAtividade()" tipo='F' class="list-group-item list-group-item-action"><i class="fas fa-link mr-2"></i>Vincular</a>
+                            <div class="dropdown-divider"></div>
+                            <a id="selecionar_F" onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
                             <a id="remover_atividade" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
                         </div>
                         <p class="pt-3">Edição</p>
@@ -105,9 +115,12 @@
                     <!-- Mapa do ambiente -->
                     <div class="row col-8">
                         <div class="row col-12">
-                            <div class="col-12">
+                            <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
                             </div>
+                            <p class="col-5 text-right align-self-center">
+                                <span id="descricao_atividade" class="badge badge-primary"></span>
+                            </p>
                             <div class="col-12 d-flex" id="ambiente">
                             </div>
                         </div>
@@ -168,6 +181,7 @@
 </div>
 
 <script>
+    const descricao_atividade = document.getElementById("descricao_atividade")
     const id_ambiente = {{ ambiente.id }}
     const ambiente = document.getElementById('ambiente')
     const atividades = {
@@ -250,7 +264,13 @@
         document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
 
         objeto_selecionado = icone
-        document.querySelector(tipo == 'O' ? `[tipo="${dado}"]` : `[tipo="${tipo}"]`).classList.add(tipo == 'O' ? atividades['O'][1] : atividades[tipo][1], 'text-white')
+        document.querySelector(tipo == 'O' ? `[tipo="${dado}"]` : `[tipo="${tipo}"]`)
+            .classList.add(tipo == 'O' ? atividades['O'][1] : atividades[tipo][1], 'text-white')
+
+        tipo == 'I' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para definir o início' :
+            tipo == 'Rota' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para uma rota' : descricao_atividade.textContent = 'ok'
+
+        carregar_configuracoes(false)
     }
 
     ativarAtividade = (coordenada) => {
@@ -260,6 +280,8 @@
     configurarAtividade = (coordenada, tipo) => {
         criarPropriedadesAtividade(coordenada, tipo)
         atualizarMenuEdicao(coordenada[0]+coordenada[1], tipo)
+
+        carregar_configuracoes(false)
     }
 
     criarPropriedadesAtividade = (coordenada, tipo) => {
@@ -324,7 +346,10 @@
         
         atividade_marcada.innerHTML = '*'
         atividade_marcada.classList.remove('atividade_marcada', atividades[tipo][1], 'atividade_selecionada')
+        atividade_marcada.setAttribute('tipo_atividade', '0')
         atividade_marcada.setAttribute('onclick', `ativarAtividade('${atividade}')`)
+
+        carregar_configuracoes(false)
     }
 
     atualizarAtributoAtividade = (atividade, elemento, atributo) => {
@@ -378,6 +403,11 @@
     adicionarObjeto = (icone) => {
         tipo_selecionado = 'O'
         objeto_selecionado = icone
+    }
+
+    vincularAtividade = () => {
+        console.log('vincularAtividade')
+        document.getElementById('vincular').classList.add('active')
     }
 
     gerarMapaSimulacao = (inicio) => {
@@ -486,7 +516,7 @@
         const ambiente = {'ambiente': `{{ ambiente.id }}`}
         dados = Object.assign(dados, ambiente)
 
-        const mapa = gerarMapaSimulacao(document.querySelector("[tipo_atividade='I']"))
+        // const mapa = gerarMapaSimulacao(document.querySelector("[tipo_atividade='I']"))
 
         atividades_selecionadas.forEach(atividade => {
             let id = `${ atividade.getAttribute('id') }`
@@ -529,7 +559,27 @@
 
     /* -> Carregar ambiente <--------------------------------------------------- */
 
+    carregar_configuracoes = (primeiro_acesso) => {
+        /* Verificando se existe algum início */
+        if (document.querySelector('[tipo_atividade="I"]')) {
+            
+            console.log(document.querySelector('[tipo_atividade="I"]'))
+
+            document.getElementById('selecionar_I').classList.remove('bg-primary-bootstrap', 'text-white')
+            document.getElementById('selecionar_I').classList.add('disabled')
+        } else {
+            document.getElementById('selecionar_I').classList.remove('disabled')
+        }
+    }
+
     carregar_atividades()
+    carregar_configuracoes(true)
+
+    /* -> Atalhos de teclado <--------------------------------------------------- */
+
+    document.onkeypress = function(evento) {
+        if (evento.keyCode == 118) { vincularAtividade() }
+    }
 </script>
 
 {% endblock %}
