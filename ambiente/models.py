@@ -62,6 +62,8 @@ class Atividade(models.Model):
 
     ambiente = models.ForeignKey(Ambiente, on_delete=models.CASCADE)
     versao = models.IntegerField()
+    proxima_atividade = models.IntegerField()
+    atividade_anterior = models.IntegerField()
     linha = models.CharField('linha', max_length=10)
     coluna = models.CharField('coluna', max_length=10)
     icone = models.CharField(max_length=255, blank=True, null=True)

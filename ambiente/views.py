@@ -75,6 +75,8 @@ def registrarAtividade(ambiente, atividade, dados, versao):
     op = Atividade.objects.create(
         ambiente=ambiente,
         atividade=dados['atividade'],
+        proxima_atividade=dados['proxima_atividade'],
+        atividade_anterior=dados['atividade_anterior'],
         linha=dados['linha'],
         coluna=dados['coluna'],
         direcao=dados['direcao'],

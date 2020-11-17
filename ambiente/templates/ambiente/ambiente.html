@@ -35,6 +35,14 @@
     a.active:not([href]):hover {
         color: #FFF;
     }
+
+    .none-events {
+        pointer-events: none;
+    }
+
+    #salvar_vinculos {
+        display: none;
+    }
 </style>
 
 <div class="container mt-3">
@@ -72,7 +80,12 @@
                             <a id="selecionar_D" onclick="selecionarTipo('D')" tipo='D' class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
                             <a id="selecionar_P" onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
                             <div class="dropdown-divider"></div>
-                            <a id="vincular" onclick="vincularAtividade()" tipo='F' class="list-group-item list-group-item-action"><i class="fas fa-link mr-2"></i>Vincular</a>
+                            <a id="vincular" onclick="vincularAtividade()" tipo='F' class="list-group-item list-group-item-action">
+                                <i class="fas fa-link mr-2"></i>Vincular
+                            </a>
+                            <div id="salvar_vinculos" class="m-2 text-center btn" onclick="salvarVinculos()">
+                                <span class="badge badge-danger p-2">Salvar vínculos</span>
+                            </div>
                             <div class="dropdown-divider"></div>
                             <a id="selecionar_F" onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
                             <a id="remover_atividade" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
@@ -207,6 +220,8 @@
     let objeto_selecionado = ''
     let mapa_simulacao = []
     let direcao_atividade_anterior = ''
+    let vinculo = []
+    let rota = 1
 
     carregar_atividades = () => {
         let atividade_documento = ''
@@ -223,6 +238,8 @@
             atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
             atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
+            atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade }}')
+            atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
@@ -261,7 +278,7 @@
     selecionarTipo = (tipo, icone, dado) => {
         tipo_selecionado = tipo
 
-        document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
+        desmarcarOpcoes()
 
         objeto_selecionado = icone
         document.querySelector(tipo == 'O' ? `[tipo="${dado}"]` : `[tipo="${tipo}"]`)
@@ -271,17 +288,29 @@
             tipo == 'Rota' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para uma rota' : descricao_atividade.textContent = 'ok'
 
         carregar_configuracoes(false)
+        desabilitarAtividadesNaoSelecionadas(false)
     }
 
     ativarAtividade = (coordenada) => {
         tipo_selecionado == '' ? alert('Selecione um tipo') : configurarAtividade(coordenada, tipo_selecionado)
     }
 
+    desmarcarOpcoes = () => {
+        document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
+    }
+
     configurarAtividade = (coordenada, tipo) => {
         criarPropriedadesAtividade(coordenada, tipo)
+
         atualizarMenuEdicao(coordenada[0]+coordenada[1], tipo)
 
         carregar_configuracoes(false)
+    }
+
+    desabilitarAtividadesNaoSelecionadas = (desabilitar) => {
+        document.querySelectorAll('.atividade:not(.atividade_selecionada)').forEach( atividade => {
+            desabilitar ? atividade.classList.add('none-events') : atividade.classList.remove('none-events')
+        })
     }
 
     criarPropriedadesAtividade = (coordenada, tipo) => {
@@ -317,23 +346,42 @@
     }
 
     atualizarMenuEdicao = (atividade, tipo) => {
-        const elemento_atividade = document.getElementById(atividade)
-        const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
-        const direcao_atividade_selecionada = document.getElementById('direcao_atividade_selecionada')
-        const duracao_atividade_selecionada = document.getElementById('duracao_atividade_selecionada')
-        const remover_atividade = document.getElementById('remover_atividade')
+        /*
+            Verifica se a opção de vinculo está ativada:
+            Se estiver irá armazenar o valor como primeiro item no array de arquivo vinculado
 
-        nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
-        nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
-        duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
+            Se não, irá habilitar o menu de edição da atividade
+        */
 
-        direcao_atividade_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoAtividade('${atividade}', 'direcao_atividade_selecionada', 'direcao')`)
+        if (document.getElementById('vincular').classList.contains('active')) {
+            vinculo.push(atividade)
+            
+            let atividade_vinculada = document.getElementById(`${atividade}`)
+            atividade_vinculada.textContent = rota
+            atividade_vinculada.setAttribute('sequencia', rota)
 
-        remover_atividade.classList.remove('disabled')
-        remover_atividade.setAttribute('onclick', `removerAtividade('${atividade}', '${tipo}')`)
+            atividade_vinculada.classList.add('text-white', 'none-events')
 
-        desmarcarAtividades()
-        marcarAtividade(atividade)
+            rota++
+        } else {
+            const elemento_atividade = document.getElementById(atividade)
+            const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
+            const direcao_atividade_selecionada = document.getElementById('direcao_atividade_selecionada')
+            const duracao_atividade_selecionada = document.getElementById('duracao_atividade_selecionada')
+            const remover_atividade = document.getElementById('remover_atividade')
+
+            nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
+            nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
+            duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
+
+            direcao_atividade_selecionada.setAttribute('onchange', `atualizarAtributoSelecaoAtividade('${atividade}', 'direcao_atividade_selecionada', 'direcao')`)
+
+            remover_atividade.classList.remove('disabled')
+            remover_atividade.setAttribute('onclick', `removerAtividade('${atividade}', '${tipo}')`)
+
+            desmarcarAtividades()
+            marcarAtividade(atividade)
+        }
     }
 
     adicionar_formulas = () => {
@@ -393,7 +441,7 @@
         }
     }
 
-    selecionarVersao = () => { 
+    selecionarVersao = () => {
         let atividadeSelecionada = document.getElementById('versao')
         let valorSelecionado = atividadeSelecionada.options[atividadeSelecionada.selectedIndex].value
 
@@ -406,7 +454,11 @@
     }
 
     vincularAtividade = () => {
-        console.log('vincularAtividade')
+        desmarcarOpcoes()
+        desabilitarAtividadesNaoSelecionadas(true)
+    
+        descricao_atividade.textContent = `Selecione as atividades na sequência de rota desejada`
+
         document.getElementById('vincular').classList.add('active')
     }
 
@@ -524,6 +576,7 @@
             let op = {
                     'atividade': atividade.getAttribute('title'),
                     'linha': atividade.getAttribute('linha'),
+                    'sequencia': atividade.getAttribute('sequencia'),
                     'coluna': atividade.getAttribute('coluna'),
                     'direcao': atividade.getAttribute('direcao'),
                     'duracao': atividade.getAttribute('duracao'),
