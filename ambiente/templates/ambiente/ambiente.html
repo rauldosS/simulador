@@ -84,7 +84,7 @@
                                 <i class="fas fa-link mr-2"></i>Vincular
                             </a>
                             <div id="salvar_vinculos" class="m-2 text-center btn" onclick="salvarVinculos()">
-                                <span class="badge badge-danger p-2">Salvar vínculos</span>
+                                <span class="badge badge-danger p-2"><i id="icone_salvar_vinculos" class="fas fa-wave-square mr-2"></i>Salvar vínculos</span>
                             </div>
                             <div class="dropdown-divider"></div>
                             <a id="selecionar_F" onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
@@ -220,7 +220,8 @@
     let objeto_selecionado = ''
     let mapa_simulacao = []
     let direcao_atividade_anterior = ''
-    let vinculo = []
+    let vinculo_inicial = ''
+    let vinculos = []
     let rota = 1
 
     carregar_atividades = () => {
@@ -354,15 +355,19 @@
         */
 
         if (document.getElementById('vincular').classList.contains('active')) {
-            vinculo.push(atividade)
-            
+            /*
+                Se "vinculo_inicial" estiver vazio será criado registrado o primeiro elemento clicado como vinculo_inicial
+            */
+
             let atividade_vinculada = document.getElementById(`${atividade}`)
-            atividade_vinculada.textContent = rota
+            
+            vinculos.push(atividade)
+            document.getElementById('salvar_vinculos').style.display = 'block'
+
+            atividade_vinculada.innerHTML = '<i class="fas fa-link"></i>'
             atividade_vinculada.setAttribute('sequencia', rota)
 
             atividade_vinculada.classList.add('text-white', 'none-events')
-
-            rota++
         } else {
             const elemento_atividade = document.getElementById(atividade)
             const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
@@ -460,6 +465,35 @@
         descricao_atividade.textContent = `Selecione as atividades na sequência de rota desejada`
 
         document.getElementById('vincular').classList.add('active')
+    }
+
+    salvarVinculos = () => {
+        const icone = document.getElementById('icone_salvar_vinculos')
+        const salvar = document.getElementById('salvar_vinculos')
+        
+        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
+
+        proximo = 1
+        for (vinculo of vinculos) {
+            const atividade_vinculada = document.getElementById(vinculo)
+            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
+            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
+
+            console.log(atividade_vinculada)
+            console.log(vinculos[proximo], vinculos[anterior])
+
+            atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo])
+            atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
+            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
+
+            proximo++
+            anterior = proxima - 2
+        }
+
+        setTimeout(() => {
+            icone.setAttribute('class', 'fas fa-circle-notch fa-spin')
+            salvar.style.display = 'none'
+        }, 2000)
     }
 
     gerarMapaSimulacao = (inicio) => {
