@@ -29,7 +29,7 @@
     }
 
     .list-group-item {
-        max-height: 50px
+        /* max-height: 50px */
     }
 
     a.active:not([href]):hover {
@@ -40,15 +40,21 @@
         pointer-events: none;
     }
 
-    #salvar_vinculos {
+    .display-none {
         display: none;
+    }
+
+    .item-menu {
+        height: 46px;
+        line-height: unset;
+        font-size: smaller;
     }
 </style>
 
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
         <div class='h-100 overflow-y-auto p-3'>
-            <div class='p-2 d-flex border-bottom mb-2 align-items-center'>
+            <div class='p-2 d-flex border-bottom mb-2 align-items-center animate__animated animate__fadeInLeft animate__delay-1s'>
                     <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
                     <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
                 <div class="d-flex flex-end w-100 row">
@@ -72,23 +78,27 @@
             <div class="container">
                 <div class="row">
                     <!-- Menu de edição -->
-                    <div class="col-2">
+                    <div class="col-2 animate__animated animate__fadeInDown">
                         <p class="pt-3">Opções</p>
                         <div class="list-group">
-                            <a id="selecionar_I" onclick="selecionarTipo('I')" tipo='I' class="list-group-item list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
-                            <a id="selecionar_R" onclick="selecionarTipo('R')" tipo='R' class="list-group-item list-group-item-action"><i class="fas fa-route mr-2"></i>Rota</a>
-                            <a id="selecionar_D" onclick="selecionarTipo('D')" tipo='D' class="list-group-item list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
-                            <a id="selecionar_P" onclick="selecionarTipo('P')" tipo='P' class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
+                            <a id="selecionar_S" onclick="selecionarTipo('S')" tipo='S' class="list-group-item item-menu list-group-item-action"><i class="fas fa-mouse-pointer mr-2"></i>Selecionar</a>
+                            <a id="selecionar_I" onclick="selecionarTipo('I')" tipo='I' class="list-group-item item-menu list-group-item-action"><i class="far fa-play-circle mr-2"></i>Início</a>
+                            <a id="selecionar_R" onclick="selecionarTipo('R')" tipo='R' class="list-group-item item-menu list-group-item-action"><i class="fas fa-route mr-2"></i>Rota</a>
+                            <a id="selecionar_D" onclick="selecionarTipo('D')" tipo='D' class="list-group-item item-menu list-group-item-action"><i class="far fa-question-circle mr-2"></i>Decisão</a>
+                            <a id="selecionar_P" onclick="selecionarTipo('P')" tipo='P' class="list-group-item item-menu list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Parada</a>
                             <div class="dropdown-divider"></div>
-                            <a id="vincular" onclick="vincularAtividade()" tipo='F' class="list-group-item list-group-item-action">
+                            <a id="vincular" onclick="vincularAtividade()" tipo='V' class="list-group-item item-menu list-group-item-action">
                                 <i class="fas fa-link mr-2"></i>Vincular
                             </a>
-                            <div id="salvar_vinculos" class="m-2 text-center btn" onclick="salvarVinculos()">
-                                <span class="badge badge-danger p-2"><i id="icone_salvar_vinculos" class="fas fa-wave-square mr-2"></i>Salvar vínculos</span>
+                            <div id="salvar_vinculos" class="m-2 text-center btn display-none animate__animated animate__fadeInDown" onclick="salvarVinculos()">
+                                <span class="badge badge-primary p-2"><i id="icone_salvar_vinculos" class="fas fa-wave-square mr-2"></i>Salvar vínculos</span>
+                            </div>
+                            <div id="cancelar_vinculos" class="text-center btn display-none animate__animated animate__fadeInDown" onclick="cancelarVinculos()">
+                                <span class="badge badge-danger p-2"><i id="icone_cancelar_vinculos" class="fas fa-times-circle mr-2"></i>Cancelar vínculos</span>
                             </div>
                             <div class="dropdown-divider"></div>
-                            <a id="selecionar_F" onclick="selecionarTipo('F')" tipo='F' class="list-group-item list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
-                            <a id="remover_atividade" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
+                            <a id="selecionar_F" onclick="selecionarTipo('F')" tipo='F' class="list-group-item item-menu list-group-item-action"><i class="far fa-times-circle mr-2"></i>Fim</a>
+                            <a id="remover_atividade" onclick="selecionarTipo('Remover')" tipo='Remover' class="list-group-item item-menu list-group-item-action disabled"><i class="far fa-trash-alt mr-2"></i>Remover</a>
                         </div>
                         <p class="pt-3">Edição</p>
                         <div class="dropdown-divider"></div>
@@ -126,7 +136,7 @@
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
-                    <div class="row col-8">
+                    <div class="row col-8 animate__animated animate__zoomInUp animate__delay-1s">
                         <div class="row col-12">
                             <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
@@ -152,28 +162,28 @@
                     </div>
 
                     <!-- Configurações ambiente -->
-                    <div class="col-2">
+                    <div class="col-2 animate__animated animate__fadeInDown">
                         <div class="list-group">    
                             <!-- <div class="dropdown-divider"></div> -->
                             <p class="p-3">Criaturas</p>
-                            <a onclick="selecionarTipo('O', 'fas fa-dragon', 'fa-dragon')" tipo="fa-dragon" class="list-group-item objeto list-group-item-action"><i class="fas fa-dragon mr-2"></i>Dragão</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-cat', 'fa-cat')" tipo="fa-cat" class="list-group-item objeto list-group-item-action"><i class="fas fa-cat mr-2"></i>Gato</a>
-                            <!-- <a onclick="selecionarTipo('O', 'fas fa-male', 'fa-male')" tipo="" class="list-group-item objeto list-group-item-action"><i class="fas fa-male mr-2"></i>Parada</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-walking', 'fa-walking')" tipo="" class="list-group-item objeto list-group-item-action"><i class="fas fa-walking mr-2"></i>Caminhando</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-running', 'fa-running')" tipo="" class="list-group-item objeto list-group-item-action"><i class="fas fa-running mr-2"></i>Correndo</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-users', 'fa-users')" tipo="" class="list-group-item objeto list-group-item-action"><i class="fas fa-users mr-2"></i>Grupo</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-chalkboard-teacher', 'fa-chalkboard-teacher')" tipo="" class="list-group-item objeto list-group-item-action"><i class="fas fa-chalkboard-teacher mr-2"></i>Sentada</a> -->
+                            <a onclick="selecionarTipo('O', 'fas fa-dragon', 'fa-dragon')" tipo="fa-dragon" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-dragon mr-2"></i>Dragão</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-cat', 'fa-cat')" tipo="fa-cat" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-cat mr-2"></i>Gato</a>
+                            <!-- <a onclick="selecionarTipo('O', 'fas fa-male', 'fa-male')" tipo="" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-male mr-2"></i>Parada</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-walking', 'fa-walking')" tipo="" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-walking mr-2"></i>Caminhando</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-running', 'fa-running')" tipo="" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-running mr-2"></i>Correndo</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-users', 'fa-users')" tipo="" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-users mr-2"></i>Grupo</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-chalkboard-teacher', 'fa-chalkboard-teacher')" tipo="" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-chalkboard-teacher mr-2"></i>Sentada</a> -->
                         
                             <div class="dropdown-divider"></div>
                             <p class="">Objetos</p>
-                            <a onclick="selecionarTipo('O', 'fas fa-square-full', 'fa-square-full')" tipo="fa-square-full" class="list-group-item objeto list-group-item-action"><i class="fas fa-square-full mr-2"></i>Parede</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-tree', 'fa-tree')" tipo="fa-tree" class="list-group-item objeto list-group-item-action"><i class="fas fa-tree mr-2"></i>Árvore</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-door', 'fa-door-closed')" tipo="fa-door" class="list-group-item objeto list-group-item-action"><i class="fas fa-door-closed mr-2"></i>Porta</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-dumpster', 'fa-dumpster')" tipo="fa-dumpster" class="list-group-item objeto list-group-item-action"><i class="fas fa-dumpster mr-2"></i>Lixeira</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-home', 'fa-home')" tipo="fa-home" class="list-group-item objeto list-group-item-action"><i class="fas fa-home mr-2"></i>Casa</a>
-                            <a onclick="selecionarTipo('O', 'fas fa-church', 'fa-church')" tipo="fa-church" class="list-group-item objeto list-group-item-action"><i class="fas fa-church mr-2"></i>Igreja</a>
-                            <a onclick="selecionarTipo('O', 'far fa-hospital', 'fa-hospital')" tipo="fa-hospital" class="list-group-item objeto list-group-item-action"><i class="far fa-hospital mr-2"></i>Farmácia</a>
-                            <a onclick="selecionarTipo('O', 'far fa-building', 'fa-building')" tipo="fa-building" class="list-group-item objeto list-group-item-action"><i class="far fa-building mr-2"></i>Prédio</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-square-full', 'fa-square-full')" tipo="fa-square-full" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-square-full mr-2"></i>Parede</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-tree', 'fa-tree')" tipo="fa-tree" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-tree mr-2"></i>Árvore</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-door', 'fa-door-closed')" tipo="fa-door" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-door-closed mr-2"></i>Porta</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-dumpster', 'fa-dumpster')" tipo="fa-dumpster" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-dumpster mr-2"></i>Lixeira</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-home', 'fa-home')" tipo="fa-home" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-home mr-2"></i>Casa</a>
+                            <a onclick="selecionarTipo('O', 'fas fa-church', 'fa-church')" tipo="fa-church" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-church mr-2"></i>Igreja</a>
+                            <a onclick="selecionarTipo('O', 'far fa-hospital', 'fa-hospital')" tipo="fa-hospital" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-hospital mr-2"></i>Farmácia</a>
+                            <a onclick="selecionarTipo('O', 'far fa-building', 'fa-building')" tipo="fa-building" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-building mr-2"></i>Prédio</a>
                         </div>
                         <p class="pt-3">Edição</p>
                         <div class="dropdown-divider"></div>
@@ -203,6 +213,7 @@
         'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão'],
         'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada'],
         'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim'],
+        'S': ['', 'bg-primary-bootstrap', 'Selecionar'],
         'O': ['text-white', 'bg-danger', 'Objeto'],
         'Remover': ['far fa-fa-trash-alt text-white', 'bg-danger', 'Fim'],
     }
@@ -277,8 +288,8 @@
     }
 
     selecionarTipo = (tipo, icone, dado) => {
-        tipo_selecionado = tipo
-
+        tipo == 'S' ? selecionar() : tipo_selecionado = tipo
+        
         desmarcarOpcoes()
 
         objeto_selecionado = icone
@@ -287,9 +298,14 @@
 
         tipo == 'I' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para definir o início' :
             tipo == 'Rota' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para uma rota' : descricao_atividade.textContent = 'ok'
-
         carregar_configuracoes(false)
         desabilitarAtividadesNaoSelecionadas(false)
+    }
+
+    selecionar = () => {
+        document.querySelectorAll('.atividade').forEach(atividade => {
+            atividade.classList.remove('none-events')
+        })
     }
 
     ativarAtividade = (coordenada) => {
@@ -297,7 +313,7 @@
     }
 
     desmarcarOpcoes = () => {
-        document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item list-group-item-action' })
+        document.querySelectorAll('[tipo]').forEach(el => { el.classList = 'list-group-item item-menu list-group-item-action' })
     }
 
     configurarAtividade = (coordenada, tipo) => {
@@ -324,6 +340,8 @@
         elemento_atividade.setAttribute('onclick', `atualizarMenuEdicao('${identificador}', '${tipo}')`)
         elemento_atividade.setAttribute('title', `${atividades[tipo][2]}`)
         elemento_atividade.setAttribute('duracao', tipo == 'O' ? 0 : '')
+        elemento_atividade.setAttribute('proxima_atividade', tipo == 'O' ? 0 : '')
+        elemento_atividade.setAttribute('atividade_anterior', tipo == 'O' ? 0 : '')
         elemento_atividade.setAttribute('linha', coordenada[0])
         elemento_atividade.setAttribute('coluna', coordenada[1])
         elemento_atividade.setAttribute('tipo_atividade', tipo)
@@ -465,35 +483,69 @@
         descricao_atividade.textContent = `Selecione as atividades na sequência de rota desejada`
 
         document.getElementById('vincular').classList.add('active')
+        document.getElementById('cancelar_vinculos').style.display = 'block'
     }
 
     salvarVinculos = () => {
         const icone = document.getElementById('icone_salvar_vinculos')
         const salvar = document.getElementById('salvar_vinculos')
+        const cancelar = document.getElementById('cancelar_vinculos')
         
         icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
 
-        proximo = 1
+        proximo = 0
+        anterior = 0
         for (vinculo of vinculos) {
             const atividade_vinculada = document.getElementById(vinculo)
             const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
             const direcao_atividade = atividade_vinculada.getAttribute('direcao')
 
-            console.log(atividade_vinculada)
-            console.log(vinculos[proximo], vinculos[anterior])
+            proximo++
+            proximo > (vinculos.length - 1) ? anterior = proximo - 2 : anterior = proximo - 1
 
             atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo])
             atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
+            
             atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
-
-            proximo++
-            anterior = proxima - 2
+            atividade_vinculada.classList.remove('none-events')
         }
 
         setTimeout(() => {
-            icone.setAttribute('class', 'fas fa-circle-notch fa-spin')
+            icone.setAttribute('class', 'fas fa-wave-square mr-2')
             salvar.style.display = 'none'
+            cancelar.style.display = 'none'
+
+            vinculos = []
+            rota = 1 
         }, 2000)
+    }
+
+    cancelarVinculos  = () => {
+        const icone = document.getElementById('icone_cancelar_vinculos')
+        const salvar = document.getElementById('salvar_vinculos')
+        const cancelar = document.getElementById('cancelar_vinculos')
+        
+        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
+
+        for (vinculo of vinculos) {
+            const atividade_vinculada = document.getElementById(vinculo)
+            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
+            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
+
+            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
+            atividade_vinculada.classList.remove('none-events')
+        }
+
+        setTimeout(() => {
+            icone.setAttribute('class', 'fas fa-wave-square mr-2')
+            salvar.style.display = 'none'
+            cancelar.style.display = 'none'
+
+            vinculos = []
+            rota = 1 
+
+            document.getElementById('selecionar_S').click()
+        }, 2000)        
     }
 
     gerarMapaSimulacao = (inicio) => {
@@ -610,6 +662,8 @@
             let op = {
                     'atividade': atividade.getAttribute('title'),
                     'linha': atividade.getAttribute('linha'),
+                    'proxima_atividade': atividade.getAttribute('proxima_atividade'),
+                    'atividade_anterior': atividade.getAttribute('atividade_anterior'),
                     'sequencia': atividade.getAttribute('sequencia'),
                     'coluna': atividade.getAttribute('coluna'),
                     'direcao': atividade.getAttribute('direcao'),
@@ -659,6 +713,7 @@
         }
     }
 
+    document.getElementById('selecionar_S').click()
     carregar_atividades()
     carregar_configuracoes(true)
 
