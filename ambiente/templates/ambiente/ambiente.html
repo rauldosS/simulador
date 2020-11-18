@@ -500,14 +500,14 @@
             const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
             const direcao_atividade = atividade_vinculada.getAttribute('direcao')
 
-            proximo++
-            proximo > (vinculos.length - 1) ? anterior = proximo - 2 : anterior = proximo - 1
-
             atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo])
             atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
             
             atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
             atividade_vinculada.classList.remove('none-events')
+
+            proximo >= (vinculos.length - 1) ? proximo : proximo++
+            anterior = proximo - 1
         }
 
         setTimeout(() => {
