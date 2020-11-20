@@ -576,3 +576,50 @@ label[name="checkbox"]::before {
   position: absolute;
   right: 1%;
 }
+
+/* SIMULAÇÃO */
+.atividade {
+  border: 1px solid;
+}
+
+.menu {
+  border: 1px solid;
+  width: 25px;
+  height: 25px;
+}
+
+.atividade_marcada {
+  outline: 2px #FF0000 solid;
+  outline-style: dashed;
+}
+
+#div_formula {
+  display: none;
+}
+
+.coluna-mapa {
+  width: 2.5%;
+  height: 2.5%;
+}
+
+.list-group-item {
+  /* max-height: 50px */
+}
+
+a.active:not([href]):hover {
+  color: #FFF;
+}
+
+.none-events {
+  pointer-events: none;
+}
+
+.display-none {
+  display: none;
+}
+
+.item-menu {
+  height: 46px;
+  line-height: unset;
+  font-size: smaller;
+}

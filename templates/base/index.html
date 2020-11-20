@@ -2,6 +2,7 @@
 <html lang="en">
 
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,48 +17,48 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-    
+
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
     <title>{% block titulo %}Simulador{% endblock %}</title>
 </head>
+
 <body>
-  <main class='w-100 d-flex  overflow-auto {% if not nobar %} no-bar  {% endif %}'>
-    <div class='h-100 shadow d-none d-lg-block d-xl-block bg-white' style='z-index: 10; max-width: 70px'>
-      <div class='container flex-column d-flex h-100 pt-2' style='height: 10vh !important;'>
-        <ul class="d-flex flex-column pl-0 mb-0 ">
-          <a href='' class="list-group-item list-group-item-action border-0"><i class="fas fa-bars fa-2x"></i></a>
-        </ul>
-      </div>
-      <div class='container flex-column d-flex h-100 pt-2' style="place-content: center; height: 90vh !important;">
-        <ul class="d-flex flex-column pl-0 mb-0 ">
-          <a href='{% url "ambiente:inicio" %}' data-content="Ambiente" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'ambiente' %}active{% endif %}"><i class="fas fa-cube fa-2x text-theme"></i></a>
-          <a href='{% url "cenario:inicio" %}' data-content="Cenário" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'cenario' %}active{% endif %}"><i class="fas fa-cubes fa-2x text-theme"></i></a>
-          <a href='http://127.0.0.1:9000/admin/' data-content="Admin" target="_blank" class="list-group-item list-group-item-action border-0 mt-1 mb-1"><i class="fas fa-user-shield fa-2x text-theme"></i></a>
-        </ul>
-      </div>
-    </div>
-    <div class='d-flex flex-column flex-fill'>
-      <nav class='d-none d-lg-block d-xl-block bg-primary text-white   shadow' >
-        <div class='d-flex'>
-            <div class='flex-fill d-flex align-items-center '>
-                <div class='flex-fill overflow-hidden'  style='height: 65px;'>
-                    <img src="" class='pt-1 pr-1' style='opacity: 0.6;margin-top: -20px;transform: rotate(20deg);height:280px;'>
-                </div>
-                <div class='flex-fill text-right d-flex pr-3'>
-                    <h3 class='my-auto d-block'>Simulador</h3>
-                    <img src="{% static 'assets/images/01.png' %}" class=' d-block ml-auto mb-1 pr-1' style='height:50px;'>
-                </div>
+    <main class='w-100 d-flex  overflow-auto {% if not nobar %} no-bar  {% endif %}'>
+        <div class='h-100 shadow d-none d-lg-block d-xl-block bg-white' style='z-index: 10; max-width: 70px'>
+            <div class='container flex-column d-flex h-100 pt-2' style='height: 10vh !important;'>
+                <ul class="d-flex flex-column pl-0 mb-0 ">
+                    <a href='' class="list-group-item list-group-item-action border-0"><i class="fas fa-bars fa-2x"></i></a>
+                </ul>
+            </div>
+            <div class='container flex-column d-flex h-100 pt-2' style="place-content: center; height: 90vh !important;">
+                <ul class="d-flex flex-column pl-0 mb-0 ">
+                    <a href='{% url "ambiente:inicio" %}' data-content="Ambiente" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'ambiente' %}active{% endif %}"><i class="fas fa-cube fa-2x text-theme"></i></a>
+                    <a href='{% url "cenario:inicio" %}' data-content="Cenário" class="list-group-item list-group-item-action border-0 mt-1 mb-1 {% if request.resolver_match.app_name == 'cenario' %}active{% endif %}"><i class="fas fa-cubes fa-2x text-theme"></i></a>
+                    <a href='http://127.0.0.1:9000/admin/' data-content="Admin" target="_blank" class="list-group-item list-group-item-action border-0 mt-1 mb-1"><i class="fas fa-user-shield fa-2x text-theme"></i></a>
+                </ul>
             </div>
         </div>
-      </nav>
-      <div class='h-100 w-100 overflow-auto'>
-        {% block content %}
-        {% endblock %}
-      </div>
-    </div>
-  </main>
-  <!-- Menu mobile -->
+        <div class='d-flex flex-column flex-fill'>
+            <nav class='d-none d-lg-block d-xl-block bg-primary text-white shadow'>
+                <div class='d-flex'>
+                    <div class='flex-fill d-flex align-items-center '>
+                        <div class='flex-fill overflow-hidden' style='height: 65px;'>
+                            <img src="" class='pt-1 pr-1' style='opacity: 0.6;margin-top: -20px;transform: rotate(20deg);height:280px;'>
+                        </div>
+                        <div class='flex-fill text-right d-flex pr-3'>
+                            <h3 class='my-auto d-block'>Simulador</h3>
+                            <img src="{% static 'assets/images/01.png' %}" class=' d-block ml-auto mb-1 pr-1' style='height:50px;'>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class='h-100 w-100 overflow-auto'>
+                {% block content %} {% endblock %}
+            </div>
+        </div>
+    </main>
+    <!-- Menu mobile -->
 </body>
 
 {% block modal %}
@@ -68,17 +69,17 @@
     /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
     var dropdown = document.getElementsByClassName("dropdown-btn");
     var i;
-    
+
     for (i = 0; i < dropdown.length; i++) {
-      dropdown[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var dropdownContent = this.nextElementSibling;
-          if (dropdownContent.style.display === "block") {
-            dropdownContent.style.display = "none";
-        } else {
-            dropdownContent.style.display = "block";
-        }
-      });
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
     }
 </script>
 

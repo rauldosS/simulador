@@ -3,53 +3,6 @@
 {% block titulo %}Ambiente{% endblock %}
 
 {% block content %}
-<style>
-    .atividade {
-        border: 1px solid;
-    }
-
-    .menu {
-        border: 1px solid;
-        width: 25px;
-        height: 25px;
-    }
-
-    .atividade_marcada {
-        outline: 2px #FF0000 solid;
-        outline-style: dashed;
-    }
-
-    #div_formula {
-        display: none;
-    }
-
-    .coluna-mapa {
-        width: 2.5%;
-        height: 2.5%;
-    }
-
-    .list-group-item {
-        /* max-height: 50px */
-    }
-
-    a.active:not([href]):hover {
-        color: #FFF;
-    }
-
-    .none-events {
-        pointer-events: none;
-    }
-
-    .display-none {
-        display: none;
-    }
-
-    .item-menu {
-        height: 46px;
-        line-height: unset;
-        font-size: smaller;
-    }
-</style>
 
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
@@ -493,21 +446,23 @@
         
         icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
 
-        proximo = 0
+        proximo = 1
         anterior = 0
         for (vinculo of vinculos) {
             const atividade_vinculada = document.getElementById(vinculo)
             const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
             const direcao_atividade = atividade_vinculada.getAttribute('direcao')
 
-            atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo])
+            atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo] ? vinculos[proximo] : vinculos[--proximo])
             atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
             
             atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
             atividade_vinculada.classList.remove('none-events')
 
-            proximo >= (vinculos.length - 1) ? proximo : proximo++
-            anterior = proximo - 1
+            if (proximo < vinculos.length) {
+                proximo++
+                anterior = proximo - 2
+            }
         }
 
         setTimeout(() => {

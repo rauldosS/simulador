@@ -1,30 +1,26 @@
-{% extends "base/index.html" %}
-
-{% block titulo %}Ambiente{% endblock %}
-
-{% block content %}
+{% extends "base/index.html" %} {% block titulo %}Ambiente{% endblock %} {% block content %}
 <style>
     .atividade {
         border: 1px solid #e0e0e0;
         width: 25px;
         height: 25px;
     }
-
+    
     .menu {
         border: 1px solid;
         min-width: 25px;
         min-height: 25px;
     }
-
+    
     .atividade_marcada {
         outline: 2px #FF0000 solid;
         outline-style: dashed;
     }
-
+    
     #div_formula {
         display: none;
     }
-
+    
     .coluna-mapa {
         /* min-width: 2.5%;
         min-height: 2.5%; */
@@ -35,13 +31,13 @@
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
         <div class='h-100 overflow-y-auto p-3'>
             <div class='p-2 d-flex border-bottom mb-2 align-items-center'>
-                    <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
-                    <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+                <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
+                <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
                 <div class="d-flex flex-end w-100 row">
                     <span class="badge badge-primary" style="height: min-content;">{{ ambiente.predefinicao.nome }}</span>
                     <div class="input-group mb-3 col-3">
                         <div class="input-group-prepend" style="height: 38px;">
-                          <label class="input-group-text" for="versao">Versão</label>
+                            <label class="input-group-text" for="versao">Versão</label>
                         </div>
                         <select class="custom-select" id="versao" onchange="selecionarVersao(this)">
                             <option value="{{ versao_carregada }}">{{ versao_carregada }}</option>
@@ -92,14 +88,17 @@
                     <!-- Mapa do ambiente -->
                     <div class="row col-8">
                         <div class="row col-12">
-                            <div class="col-12">
+                            <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
                             </div>
+                            <p class="col-5 text-right align-self-center">
+                                <span id="descricao_atividade" class="badge badge-primary"></span>
+                            </p>
                             <div class="col-12 d-flex" id="ambiente">
                             </div>
                         </div>
-                        
-                        <div  class="col-12">
+
+                        <div class="col-12">
                             <form id="div_formula" action="">
                                 <div class="form-group">
                                     <label for="formula">Fórmula</label>
@@ -118,29 +117,35 @@
 </div>
 
 <script>
+    const descricao_atividade = document.getElementById('descricao_atividade')
     const id_ambiente = '{{ ambiente }}'
     const ambiente = document.getElementById('ambiente')
 
     const atividades = {
-        'I': ['Início'],
-        'R': ['Rota'],
-        'D': ['Decisão'],
-        'P': ['Parada'],
-        'F': ['Fim'],
-        'O': ['Objeto'],
+        'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início'],
+        'R': ['fas fa-road text-white', 'bg-success', 'Rota'],
+        'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão'],
+        'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada'],
+        'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim'],
+        'S': ['', 'bg-primary-bootstrap', 'Selecionar'],
+        'O': ['text-white', 'bg-danger', 'Objeto'],
+        'Remover': ['far fa-fa-trash-alt text-white', 'bg-danger', 'Fim'],
     }
+
     const rotas = {
-        'S': 'Selecionar',
         'C': 'fas fa-arrow-up',
         'D': 'fas fa-arrow-right',
         'B': 'fas fa-arrow-down',
         'E': 'fas fa-arrow-left',
+        'F': 'fas fa-times-circle',
         'DC': 'fas fa-question-circle',
     }
 
     let tipo_selecionado = ''
     let objeto_selecionado = ''
     let mapa_simulacao = ''
+
+    let numero_participante = 0
 
     /* Carregar ambiente de simulação */
 
@@ -150,33 +155,35 @@
         let icone = ''
 
         {% for atividade in atividades %}
-            atividade_documento = document.getElementById('{{ atividade.atividade }}')
+            atividade_documento = document.getElementById('{{ atividade.linha }}{{ atividade.coluna }}')
 
             atividade_documento.innerHTML = ''
             atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
             atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
-            atividade_documento.setAttribute('title', '{{ atividade.nome }}')
+            atividade_documento.setAttribute('title', '{{ atividade.atividade }}')
             atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
             atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
+            atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade|safe }}')
+            atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior|safe }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
 
             i = document.createElement('i')
-            
+
             if ('{{ atividade.tipo }}' == 'O') {
                 i.setAttribute('class', '{{ atividade.icone }}')
             } else {
-                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}']} text-white` : atividades['{{ atividade.tipo }}'][0])   
+                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}']} text-white` : atividades['{{ atividade.tipo }}'][0])
             }
-            
+
             atividade_documento.append(i)
         {% endfor %}
     }
 
     for (let coluna = 0; coluna <= 40; coluna++) {
-        const div_coluna = document.createElement('div') 
+        const div_coluna = document.createElement('div')
 
         div_coluna.setAttribute('class', 'flex-row coluna-mapa')
 
@@ -191,7 +198,7 @@
             atividade.textContent = ''
 
             div_coluna.append(atividade)
-        }   
+        }
     }
 
     /* Funções de seleção de atividade */
@@ -211,7 +218,7 @@
         desmarcarAtividades()
         marcarAtividade(atividade)
     }
-    
+
     marcarAtividade = (atividade) => {
         atividade_marcada = document.getElementById(atividade)
 
@@ -235,7 +242,7 @@
         }
     }
 
-    selecionarVersao = () => { 
+    selecionarVersao = () => {
         let atividadeSelecionada = document.getElementById('versao')
         let valorSelecionado = atividadeSelecionada.options[atividadeSelecionada.selectedIndex].value
 
@@ -249,8 +256,8 @@
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                     break;
                 }
@@ -260,17 +267,65 @@
     }
 
     /* -> Simulação <--------------------------------------------------- */
-    
+
     iniciarSimulacao = (elemento) => {
         elemento.classList.toggle('active')
-        console.log('Vai começar')
-
         const quantidade_participantes = document.getElementById('quantidade_participantes').value
 
-        if (tipo_ambiente == 'COVID') {
-            instanciarParticipanteCOVID(quantidade_participantes)
+        if (quantidade_participantes) {
+            descricao_atividade.textContent = 'Iniciando simulação'
+            tipo_ambiente == 'COVID'? instanciarParticipanteCOVID(quantidade_participantes) : ''
+
+            contagemRegressiva(3)
+        } else {
+            descricao_atividade.textContent = 'Digite um número de participantes para iniciar'
         }
     }
+
+    contagemRegressiva = (segundos) => {
+        setTimeout(() => {
+            descricao_atividade.textContent = `Iniciando simulação em ${segundos}`
+            segundos--
+
+            segundos == 0 ? iniciarAtividade() : contagemRegressiva(segundos)
+        }, 1000)
+    }
+    
+    iniciarAtividade = () => {
+        const primeira_atividade = document.querySelector("[tipo_atividade='I']")
+
+        executarAtividade(primeira_atividade, participantes[0], numero_participante)
+        // participantes.forEach(participante => {
+            
+        // })
+    }
+
+    executarAtividade = (atividade, participante, numero_participante) => {
+        const proxima_atividade = document.getElementById(atividade.getAttribute('proxima_atividade'))
+        const duracao = atividade.getAttribute('duracao')
+        const atividade_atual = atividade.getAttribute('title')
+        const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
+
+        console.log(`Participante: ${ numero_participante } - ${ atividade_atual }`)
+
+        /*
+            -> Executar atividade inicial para o próximo participante
+            -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM)
+        */
+
+        setTimeout(() => {
+            if (tipo_atividade_atual != 'F') {
+                executarAtividade(proxima_atividade, participantes[numero_participante], numero_participante)
+            }
+
+            ++numero_participante
+            if (numero_participante <= participantes.length - 1) {  
+                executarAtividade(atividade, participantes[numero_participante], numero_participante)
+            }
+        }, (duracao*1000) + 1)
+    }
+
+    // <i class="fas fa-walking"></i>
 
     /* -> Participantes <--------------------------------------------------- */
 
@@ -279,7 +334,7 @@
     let participantes = []
 
     nomes = ["Miguel", "Davi", "Arthur", "Pedro", "Gabriel", "Bernardo", "Lucas", "Matheus", "Rafael", "Heitor", "Enzo", "Guilherme", "Nicolas", "Lorenzo", "Gustavo", "Felipe", "Samuel", "João Pedro", "Daniel", "Vitor", "Leonardo", "Henrique", "Theo", "Murilo", "Eduardo", "Pedro Henrique", "Pietro", "Cauã", "Isaac", "Caio", "Vinicius", "Benjamin", "João", "Lucca", "João Miguel", "Bryan", "Joaquim", "João Vitor", "Thiago", "Antônio", "Davi Lucas", "Francisco", "Enzo Gabriel", "Bruno", "Emanuel", "João Gabriel", "Ian", "Davi Luiz", "Rodrigo", "Otávio", "Sophia", "Alice", "Julia", "Isabella", "Manuela", "Laura", "Luiza", "Valentina", "Giovanna", "Maria Eduarda", "Helena", "Beatriz", "Maria Luiza", "Lara", "Mariana", "Nicole", "Rafaela", "Heloísa", "Isadora", "Lívia", "Maria Clara", "Ana Clara", "Lorena", "Gabriela", "Yasmin", "Isabelly", "Sarah", "Ana Julia", "Letícia", "Ana Luiza", "Melissa", "Marina", "Clara", "Cecília", "Esther", "Emanuelly", "Rebeca", "Ana Beatriz", "Lavínia", "Vitória", "Bianca", "Catarina", "Larissa", "Maria Fernanda", "Fernanda", "Amanda", "Alícia", "Carolina"]
-    
+
     instanciarParticipanteCOVID = (quantidade_participantes) => {
         class Participante {
             constructor(nome, estado) {
@@ -298,8 +353,6 @@
         for (i = 0; i < quantidade_participantes; i++) {
             p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)])
             participantes.push(p)
-
-            console.log(participantes)
         }
     }
 
