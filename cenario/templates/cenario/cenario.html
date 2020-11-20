@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
-                    <div class="row col-8">
+                    <div class="row col-10">
                         <div class="row col-12">
                             <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
@@ -294,35 +294,45 @@
     iniciarAtividade = () => {
         const primeira_atividade = document.querySelector("[tipo_atividade='I']")
 
-        executarAtividade(primeira_atividade, participantes[0], numero_participante)
-        // participantes.forEach(participante => {
-            
-        // })
+        executarAtividade(primeira_atividade, participantes[0], 0)
     }
 
     executarAtividade = (atividade, participante, numero_participante) => {
+        const primeira_atividade = document.querySelector("[tipo_atividade='I']")
         const proxima_atividade = document.getElementById(atividade.getAttribute('proxima_atividade'))
         const duracao = atividade.getAttribute('duracao')
         const atividade_atual = atividade.getAttribute('title')
         const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
+        const id_atividade = atividade.getAttribute('id')
 
-        console.log(`Participante: ${ numero_participante } - ${ atividade_atual }`)
-
-        /*
-            -> Executar atividade inicial para o próximo participante
-            -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM)
-        */
-
+        console.log('------------------------------')
+        console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual }" - ${ tipo_atividade_atual }`)
+        console.log('Número participante:', numero_participante)
+        console.log('Atividades:', participantes[numero_participante]['atividades'])
+        console.log(participantes[numero_participante])
+       
+        participantes[numero_participante]['atividades'].push(id_atividade)
+        
         setTimeout(() => {
+            /* -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM) */
             if (tipo_atividade_atual != 'F') {
                 executarAtividade(proxima_atividade, participantes[numero_participante], numero_participante)
             }
 
-            ++numero_participante
-            if (numero_participante <= participantes.length - 1) {  
-                executarAtividade(atividade, participantes[numero_participante], numero_participante)
+            numero_participante = numero_participante + 1
+
+            /* ->
+                Executar atividade inicial para o próximo participante
+                    Se o número de participantes total já não estiver sido verificado
+                    Se a atividade inicial ainda não foi incluída no participante['atividades']
+            */
+            if (numero_participante < participantes.length) {
+                if (!participantes[numero_participante]['atividades'].includes(`${ primeira_atividade.getAttribute('id') }`)) {
+                    executarAtividade(primeira_atividade, participantes[numero_participante], numero_participante)
+                }
             }
         }, (duracao*1000) + 1)
+
     }
 
     // <i class="fas fa-walking"></i>
@@ -337,9 +347,10 @@
 
     instanciarParticipanteCOVID = (quantidade_participantes) => {
         class Participante {
-            constructor(nome, estado) {
+            constructor(nome, estado, atividades) {
                 this.nome = nome
-                this.estado = estado
+                this.estado = estado,
+                this.atividades = atividades
             }
         }
 
@@ -351,7 +362,7 @@
         }
 
         for (i = 0; i < quantidade_participantes; i++) {
-            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)])
+            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], [])
             participantes.push(p)
         }
     }
