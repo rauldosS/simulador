@@ -598,7 +598,7 @@ label[name="checkbox"]::before {
 }
 
 .coluna-mapa {
-  width: 2.5%;
+  /* width: 2.5%; */
   height: 2.5%;
 }
 
@@ -622,4 +622,13 @@ a.active:not([href]):hover {
   height: 46px;
   line-height: unset;
   font-size: smaller;
+}
+
+.badge-simulacao {
+  padding: 1rem;
+  font-size: initial;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

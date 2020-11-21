@@ -25,6 +25,27 @@
         /* min-width: 2.5%;
         min-height: 2.5%; */
     }
+
+    .participante_atividade {
+        transition: all .5s
+    }
+
+    .participante_atividade:hover:after {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+        content: attr(conteudo);
+        background-color: rgb(177 72 195);
+        border: 3px solid rgb(156, 39, 176, .5);
+        color: #FFF;
+        padding: 4px 11px;
+        border-radius: 1rem;
+        z-index: 9999999999999999999999999999;
+        position: relative;
+        min-width: 400px;
+        display: inline-grid;
+        bottom: 14px;
+        left: 8px;
+    }
 </style>
 
 <div class="container mt-3">
@@ -92,7 +113,8 @@
                                 <p class="pt-3">Mapa do ambiente</p>
                             </div>
                             <p class="col-5 text-right align-self-center">
-                                <span id="descricao_atividade" class="badge badge-primary"></span>
+                                <span id="descricao_atividade" class="badge badge-primary badge-simulacao"></span>
+                                <span id="tempo_simulacao" class="badge badge-danger badge-simulacao"></span>
                             </p>
                             <div class="col-12 d-flex" id="ambiente">
                             </div>
@@ -121,15 +143,20 @@
     const id_ambiente = '{{ ambiente }}'
     const ambiente = document.getElementById('ambiente')
 
+    let tempo_simulacao = document.getElementById('tempo_simulacao')
+    let simulacao_iniciada = false
+    let pausar = false
+    let parar = false
+
     const atividades = {
-        'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início'],
-        'R': ['fas fa-road text-white', 'bg-success', 'Rota'],
-        'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão'],
-        'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada'],
-        'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim'],
-        'S': ['', 'bg-primary-bootstrap', 'Selecionar'],
-        'O': ['text-white', 'bg-danger', 'Objeto'],
-        'Remover': ['far fa-fa-trash-alt text-white', 'bg-danger', 'Fim'],
+        'I': ['far fa-play-circle text-white', 'bg-primary-bootstrap', 'Início', 'fas fa-walking'],
+        'R': ['fas fa-road text-white', 'bg-success', 'Rota', 'fas fa-walking'],
+        'D': ['far fa-question-circle text-white', 'bg-warning', 'Decisão', 'fas fa-walking'],
+        'P': ['far fa-pause-circle text-white', 'bg-dark', 'Parada', 'fas fa-male'],
+        'F': ['far fa-times-circle text-white', 'bg-danger', 'Fim', 'fas fa-walking'],
+        'S': ['', 'bg-primary-bootstrap', 'Selecionar', ''],
+        'O': ['text-white', 'bg-danger', 'Objeto', ''],
+        'Remover': ['far fa-fa-trash-alt text-white', 'bg-danger', 'Fim', ''],
     }
 
     const rotas = {
@@ -269,29 +296,27 @@
     /* -> Simulação <--------------------------------------------------- */
 
     iniciarSimulacao = (elemento) => {
-        elemento.classList.toggle('active')
-        const quantidade_participantes = document.getElementById('quantidade_participantes').value
+        if (simulacao_iniciada === false) {
+            elemento.classList.toggle('active')
+            const quantidade_participantes = document.getElementById('quantidade_participantes').value
 
-        if (quantidade_participantes) {
-            descricao_atividade.textContent = 'Iniciando simulação'
-            tipo_ambiente == 'COVID'? instanciarParticipanteCOVID(quantidade_participantes) : ''
+            if (quantidade_participantes) {
+                descricao_atividade.textContent = 'Iniciando simulação'
+                tipo_ambiente == 'COVID'? instanciarParticipanteCOVID(quantidade_participantes) : ''
 
-            contagemRegressiva(3)
-        } else {
-            descricao_atividade.textContent = 'Digite um número de participantes para iniciar'
+                contagemRegressiva(3)
+            } else {
+                descricao_atividade.textContent = 'Digite um número de participantes para iniciar'
+            }
         }
-    }
 
-    contagemRegressiva = (segundos) => {
-        setTimeout(() => {
-            descricao_atividade.textContent = `Iniciando simulação em ${segundos}`
-            segundos--
-
-            segundos == 0 ? iniciarAtividade() : contagemRegressiva(segundos)
-        }, 1000)
+        simulacao_iniciada = true
     }
     
     iniciarAtividade = () => {
+        descricao_atividade.textContent = `Simulação iniciada`
+
+        tempoSimulacao(1)
         const primeira_atividade = document.querySelector("[tipo_atividade='I']")
 
         executarAtividade(primeira_atividade, participantes[0], 0)
@@ -301,17 +326,25 @@
         const primeira_atividade = document.querySelector("[tipo_atividade='I']")
         const proxima_atividade = document.getElementById(atividade.getAttribute('proxima_atividade'))
         const duracao = atividade.getAttribute('duracao')
-        const atividade_atual = atividade.getAttribute('title')
-        const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
         const id_atividade = atividade.getAttribute('id')
+        const atividade_atual = document.getElementById(id_atividade)
+        const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
 
         console.log('------------------------------')
-        console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual }" - ${ tipo_atividade_atual }`)
+        console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`)
         console.log('Número participante:', numero_participante)
         console.log('Atividades:', participantes[numero_participante]['atividades'])
         console.log(participantes[numero_participante])
        
         participantes[numero_participante]['atividades'].push(id_atividade)
+
+        atividade_atual.classList.add('participante_atividade')
+        atividade_atual.setAttribute(
+            'conteudo',
+            `Participante: ${ numero_participante } - ${ participantes[numero_participante].nome } - ${ participantes[numero_participante].estado } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`
+        )
+        
+        atualizarIcone(participantes[numero_participante], id_atividade, tipo_atividade_atual)
         
         setTimeout(() => {
             /* -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM) */
@@ -335,9 +368,44 @@
 
     }
 
+    atualizarIcone = (participante, atividade, tipo_atividade) => {
+        const atividade_ = document.getElementById(atividade)
+
+        atividade_.innerHTML = `<i class='${ atividades[tipo_atividade][3] } text-white'></i>`
+    }
+
     // <i class="fas fa-walking"></i>
 
+    /* --------------------------------------------------------------------- */
+    /* -> Temporizadoras  <--------------------------------------------------- */
+    /* --------------------------------------------------------------------- */
+
+    contagemRegressiva = (segundos) => {
+        setTimeout(() => {
+            descricao_atividade.textContent = `Iniciando simulação em ${segundos}`
+            segundos--
+
+            segundos == 0 ? iniciarAtividade() : contagemRegressiva(segundos)
+        }, 1000)
+    }
+
+    tempoSimulacao = (segundos) => {
+        setTimeout(() => {
+            ++segundos
+            tempo_simulacao.textContent = `${ segundos }s`
+
+            tempoSimulacao(segundos)
+        }, 1000)
+    }
+
+    pausarSimulacao = () => {
+        pausar = true
+    }
+
+    /* --------------------------------------------------------------------- */
     /* -> Participantes <--------------------------------------------------- */
+    /* --------------------------------------------------------------------- */
+
 
     const tipo_ambiente = '{{ tipo_ambiente }}'
     let participante = ''
