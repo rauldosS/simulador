@@ -14,6 +14,30 @@
         width: 25px !important;
         height: 25px !important;
     }
+
+    .atividade_selecionada:after {
+        opacity: 0;
+        -webkit-transition: all 3s;
+        transition: all 3s;
+    }
+
+    .atividade_selecionada:hover:after {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+        content: attr(conteudo);
+        background-color: rgb(177 72 195);
+        border: 3px solid rgb(156, 39, 176, .5);
+        color: #FFF;
+        padding: 4px 11px;
+        border-radius: 1rem;
+        z-index: 9999999999999999999999999999;
+        position: relative;
+        min-width: 400px;
+        display: inline-grid;
+        bottom: 14px;
+        left: 8px;
+        opacity: 1;
+    }
 </style>
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
@@ -98,6 +122,14 @@
                             <label for="formula_atividade_selecionada">Fórmula</label>
                             <input id="formula_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
                         </div>
+                        <div class="form-group">
+                            <label for="proxima_atividade_selecionada">Próxima atividade</label>
+                            <input id="proxima_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="anterior_atividade_selecionada">Atividade anterior</label>
+                            <input id="anterior_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                        </div>
                     </div>
                     <!-- Mapa do ambiente -->
                     <div class="row col-8 animate__animated animate__zoomInUp animate__delay-1s">
@@ -118,7 +150,7 @@
                                 <div class="row mb-3">
                                     <div class="row col-12">
                                         <div class="col-6">
-                                            <p><span class=" text-success"><i class="fas fa-child mr-1"></i>Participante</span></p>
+                                            <p><span class="text-success"><i class="fas fa-child mr-1"></i>Participante</span></p>
                                             <div id="div_atributos_participante"></div>
                                         </div>
                                         <div class="col-6">
@@ -128,7 +160,7 @@
                                                 <a id="duracao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'duracao', this.getAttribute('value'))" value=""><i class="far fa-clock mr-1"></i>Duração</a>
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-6 mt-3">
                                             <p><span class=" text-danger"><i class="fas fa-calculator mr-1"></i>Operações</span></p>
                                             <div id="div_operacoes_simulacao">
                                                 <!-- <a class="badge badge-danger text-white m-1 p-2" onclick="selecionarElementoFormula()"><i class="fas fa-route mr-1"></i></i>Direção</a> -->
@@ -153,7 +185,7 @@
 
                                 <input id="quantidade_participantes" type="text" class="form-control" placeholder="Código fórmula" disabled></input>
 
-                                <pre>
+                                <!-- <pre>
                                     <p>You <code>&lt;font&gt;</code> and <code>&lt;center&gt;</code>.</p>
                                     
                                     <p>In the above JavaScript example, <var>para</var> represents a paragraph element.</p>
@@ -165,7 +197,7 @@
                                         PING mozilla.org (63.245.215.20): 56 data bytes
                                         64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms
                                     </samp>
-                                </pre>
+                                </pre> -->
 
                                 <div class="dropdown-divider mt-3 mb-3"></div>
                                 <h5 for="formula_atividade_selecionada"><i class="far fa-check-circle mr-1"></i>Retorno</h5>
@@ -236,6 +268,7 @@
     const duracao_atividade_formula = document.getElementById('duracao_atividade_formula')
     const div_formula = document.getElementById('formula')
     const id_ambiente = {{ ambiente.id }}
+    const predefinicao = '{{ ambiente.predefinicao.nome }}'
     const ambiente = document.getElementById('ambiente')
     // atividades = [ícone, cor fundo, título, direção, direcao_ativada]
     const atividades = {
@@ -277,8 +310,9 @@
         'atributo':
             {
                 'cor': 'bg-danger',
-                'direcao': ['fas fa-route mr-1'],
-                'duracao': ['far fa-clock mr-1']
+                'direcao': ['fas fa-route mr-1', 'simulacao'],
+                'duracao': ['far fa-clock mr-1', 'simulacao'],
+                'temperatura': ['fas fa-arrow-up mr-1', 'participante']
             },
         'prioridade':
             {
@@ -286,6 +320,17 @@
                 'fecha_parenteses': [],
                 'parenteses': [],
             },
+    }
+
+    const configuracao_predefinicao = {
+        'COVID': {
+            'cor': 'dg-success text-white',
+            'participante': {
+                'Nome': ['fas fa-signature mr-2'],
+                'Idade': ['fas fa-birthday-cake mr-2'],
+                'Temperatura': ['fas fa-temperature-low mr-2'],
+            }
+        }
     }
 
     let mouseClicado = false
@@ -320,6 +365,7 @@
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
+            atividade_documento.setAttribute('conteudo', '{{ atividade.linha }}{{ atividade.coluna }} - {{ atividade.atividade }} - {{ atividade.duracao }}s - ')
 
             i = document.createElement('i')
             
@@ -365,7 +411,7 @@
 
         tipo == 'I' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para definir o início' :
             tipo == 'Rota' ? descricao_atividade.textContent = 'Selecione uma atividade no mapa do ambiente para uma rota' : descricao_atividade.textContent = 'ok'
-        carregar_configuracoes(false)
+        carregarConfiguracoes(false)
         desabilitarAtividadesNaoSelecionadas(false)
     }
 
@@ -394,7 +440,7 @@
 
         atualizarMenuEdicao(coordenada[0]+coordenada[1], tipo)
 
-        carregar_configuracoes(false)
+        carregarConfiguracoes(false)
     }
 
     desabilitarAtividadesNaoSelecionadas = (desabilitar) => {
@@ -487,7 +533,7 @@
         atividade_marcada.setAttribute('tipo_atividade', '0')
         atividade_marcada.setAttribute('onclick', `ativarAtividade(event, '${atividade}')`)
 
-        carregar_configuracoes(false)
+        carregarConfiguracoes(false)
     }
 
     atualizarAtributoAtividade = (atividade, elemento, atributo) => {
@@ -515,6 +561,8 @@
 
         document.getElementById('duracao_atividade_selecionada').value = atividade_marcada.getAttribute('duracao')
         document.getElementById('direcao_atividade_selecionada').value = atividade_marcada.getAttribute('direcao')
+        document.getElementById('proxima_atividade_selecionada').value = atividade_marcada.getAttribute('proxima_atividade')
+        document.getElementById('anterior_atividade_selecionada').value = atividade_marcada.getAttribute('atividade_anterior')
         document.getElementById('tipo_atividade_selecionada').value = atividades[atividade_marcada.getAttribute('tipo_atividade')][2]
 
         let direcao = document.getElementById('direcao_atividade_selecionada')
@@ -681,24 +729,26 @@
         }
     }
 
-    selecionarElementoFormula = (tipo, icone, valor) => {
+    selecionarElementoFormula = (tipo, item, valor) => {
         if (ultimo_elemento_formula_adicionado == false && tipo == 'operacao') { return alert('Selecione um atributo para começar sua fórmula!') }
         if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'atributo')  { return alert('Selecione uma operação para continuar sua fórmula!') }
 
         if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'operacao') { 'ok '}
 
-        adicionarAtributoFormula(tipo, elementos_formula[tipo][icone][0], elementos_formula[tipo]['cor'], valor)
+        adicionarAtributoFormula(tipo, item, elementos_formula[tipo]['cor'], valor)
         ultimo_elemento_formula_adicionado = 'atributo'
     }
 
-    adicionarAtributoFormula = (tipo, icone, cor, valor) => {
+    adicionarAtributoFormula = (tipo, item, cor, valor) => {
         const kbd = document.createElement('kbd')
 
-        kbd.setAttribute('class', `${ cor }`)
+        kbd.setAttribute('class', `${ cor } mr-1`)
         kbd.setAttribute('tipo', tipo)
         kbd.setAttribute('valor', valor)
 
-        kbd.innerHTML = `<i class="${ icone }"></i>${ tipo != 'operacao' ? valor : '' }`
+        tipo == 'atributo' ? kbd.setAttribute('origem_atributo', elementos_formula[tipo][item][1]) : ''
+
+        kbd.innerHTML = `<i class="${ elementos_formula[tipo][item][0] }"></i>${ tipo != 'operacao' ? valor : '' }`
         div_formula.append(kbd)
     }
 
@@ -870,13 +920,33 @@
         // console.log(atividade_cima)
     }
 
+    /* ------------------------------------------------------------------------- */
     /* -> Carregar ambiente <--------------------------------------------------- */
+    /* ------------------------------------------------------------------------- */
 
-    carregar_configuracoes = (primeiro_acesso) => {
+    carregarAtributosParticipante = () => {
+        const div_atributos_participante = document.getElementById('div_atributos_participante')
+
+        for (const [atributo, opcoes] of Object.entries(configuracao_predefinicao[predefinicao]['participante'])) {
+            console.log(atributo, opcoes)
+            const a = document.createElement('a')
+
+            a.setAttribute('class', 'badge badge-success text-white m-1 p-2 cursor-pointer')
+            a.setAttribute('onclick', `selecionarElementoFormula('atributo', 'temperatura', '${ atributo }')`)
+            
+            a.innerHTML = `<i class="${ opcoes[0] }"></i>${ atributo }`
+
+            div_atributos_participante.append(a)
+        }
+    }
+
+    carregarConfiguracoes = (primeiro_acesso) => {
         /* Verificando se existe algum início */
         if (document.querySelector('[tipo_atividade="I"]')) {
             document.getElementById('selecionar_I').classList.remove('bg-primary-bootstrap', 'text-white')
             document.getElementById('selecionar_I').classList.add('disabled')
+
+            carregarAtributosParticipante()
         } else {
             document.getElementById('selecionar_I').classList.remove('disabled')
         }
@@ -884,7 +954,7 @@
 
     document.getElementById('selecionar_S').click()
     carregar_atividades()
-    carregar_configuracoes(true)
+    carregarConfiguracoes(true)
 
     /* -> Atalhos de teclado <--------------------------------------------------- */
 
