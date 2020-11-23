@@ -7,6 +7,13 @@
     .coluna-mapa {
         width: 2.5%;
     }
+
+    .atividade {
+        max-height: 25px !important;
+        max-width: 25px !important;
+        width: 25px !important;
+        height: 25px !important;
+    }
 </style>
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
@@ -106,80 +113,80 @@
                         </div>
                         
                         <div id="div_formula" class="col-12 p-3 animate__animated animate__fadeInDown">
-                            <form class="p-3">
-                                <div class="form-group">
-                                    <h5 for="formula"><i class="fas fa-cubesm mr-1"></i>Elementos da simulação</h5>
-                                    <div class="row mb-3">
-                                        <div class="row col-12">
-                                            <div class="col-6">
-                                                <p><span class=" text-success"><i class="fas fa-child mr-1"></i>Participante</span></p>
-                                                <div id="div_atributos_participante"></div>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><span class=" text-danger"><i class="fas fa-map-marked-alt mr-1"></i>Simulação</span></p>
-                                                <div id="div_atributos_simulacao">
-                                                    <a id="direcao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', this)" value=""><i class="fas fa-route mr-1"></i></i>Direção</a>
-                                                    <a id="duracao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarAtributoFormula('atributo', this)" value=""><i class="far fa-clock mr-1"></i>Duração</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><span class=" text-danger"><i class="fas fa-calculator mr-1"></i>Operações</span></p>
-                                                <div id="div_operacoes_simulacao">
-                                                    <!-- <a class="badge badge-danger text-white m-1 p-2" onclick="selecionarAtributoFormula()"><i class="fas fa-route mr-1"></i></i>Direção</a> -->
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '+')"   class="cursor-pointer"><i class="fas fa-plus"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '-')"   class="cursor-pointer"><i class="fas fa-minus"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '/')"   class="cursor-pointer"><i class="fas fa-divide"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '%')"   class="cursor-pointer"><i class="fas fa-percentage"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '=')"   class="cursor-pointer"><i class="fas fa-equals"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '!=')"  class="cursor-pointer"><i class="fas fa-not-equal"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '<')"   class="cursor-pointer"><i class="fas fa-less-than"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '<=')"  class="cursor-pointer"><i class="fas fa-less-than-equal"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '>')"   class="cursor-pointer"><i class="fas fa-greater-than"></i></kbd>
-                                                    <kbd onclick="selecionarAtributoFormula('operacao', '>=')"  class="cursor-pointer"><i class="fas fa-greater-than-equal"></i></kbd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="dropdown-divider mt-3 mb-3"></div>
-                                    <h5 for="formula_atividade_selecionada"><i class="fas fa-project-diagram mr-1"></i>Fórmula</h5>
-                                    <pre id="formula"></pre>
-
-                                    <input id="quantidade_participantes" type="text" class="form-control" placeholder="Código fórmula" disabled></input>
-
-                                    <pre>
-                                        <p>You <code>&lt;font&gt;</code> and <code>&lt;center&gt;</code>.</p>
-                                        
-                                        <p>In the above JavaScript example, <var>para</var> represents a paragraph element.</p>
-                                        
-                                        <p>Select all the text with <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>A</kbd>.</p>
-                                        
-                                        <pre>$ <kbd>ping mozilla.org</kbd></pre>
-                                        <samp>
-                                            PING mozilla.org (63.245.215.20): 56 data bytes
-                                            64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms
-                                        </samp>
-                                    </pre>
-
-                                    <div class="dropdown-divider mt-3 mb-3"></div>
-                                    <h5 for="formula_atividade_selecionada"><i class="far fa-check-circle mr-1"></i>Retorno</h5>
+                            <div class="form-group border p-3 rounded">
+                                <h5 for="formula"><i class="fas fa-cubesm mr-1"></i>Elementos da simulação</h5>
+                                <div class="row mb-3">
                                     <div class="row col-12">
                                         <div class="col-6">
-                                            <p>Selecionar retorno <span class=" text-success">verdadeiro</span></p>
-                                            <div id="div_atividades_formula_verdadeiro"></div>
+                                            <p><span class=" text-success"><i class="fas fa-child mr-1"></i>Participante</span></p>
+                                            <div id="div_atributos_participante"></div>
                                         </div>
                                         <div class="col-6">
-                                            <p>Selecionar retorno <span class=" text-danger">falso</span></p>
-                                            <div id="div_atividades_formula_falso"></div>
+                                            <p><span class=" text-danger"><i class="fas fa-map-marked-alt mr-1"></i>Simulação</span></p>
+                                            <div id="div_atributos_simulacao">
+                                                <!-- <a id="direcao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'direcao', this.getAttribute('value'))" value=""><i class="fas fa-route mr-1"></i></i>Direção</a> -->
+                                                <a id="duracao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'duracao', this.getAttribute('value'))" value=""><i class="far fa-clock mr-1"></i>Duração</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <p><span class=" text-danger"><i class="fas fa-calculator mr-1"></i>Operações</span></p>
+                                            <div id="div_operacoes_simulacao">
+                                                <!-- <a class="badge badge-danger text-white m-1 p-2" onclick="selecionarElementoFormula()"><i class="fas fa-route mr-1"></i></i>Direção</a> -->
+                                                <kbd onclick="selecionarElementoFormula('operacao', '+', '+')"   class="cursor-pointer"><i class="fas fa-plus"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '-', '-')"   class="cursor-pointer"><i class="fas fa-minus"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '/', '/')"   class="cursor-pointer"><i class="fas fa-divide"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '%', '%')"   class="cursor-pointer"><i class="fas fa-percentage"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '=', '=')"   class="cursor-pointer"><i class="fas fa-equals"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '!=', '!=')"  class="cursor-pointer"><i class="fas fa-not-equal"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '<', '<')"   class="cursor-pointer"><i class="fas fa-less-than"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '<=', '<=')"  class="cursor-pointer"><i class="fas fa-less-than-equal"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '>', '>')"   class="cursor-pointer"><i class="fas fa-greater-than"></i></kbd>
+                                                <kbd onclick="selecionarElementoFormula('operacao', '>=', '>=')"  class="cursor-pointer"><i class="fas fa-greater-than-equal"></i></kbd>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="p-3 text-right">
-                                        <a id="btn_salvar_formula" onclick="salvarFormula()" class="btn btn-success text-white">Salvar Fórmula</a>
+                                </div>
+
+                                <div class="dropdown-divider mt-3 mb-3"></div>
+                                <h5 for="formula_atividade_selecionada"><i class="fas fa-project-diagram mr-1"></i>Fórmula</h5>
+                                <div id="formula" class="m-3 p-3 border rounded"></div>
+
+                                <input id="quantidade_participantes" type="text" class="form-control" placeholder="Código fórmula" disabled></input>
+
+                                <pre>
+                                    <p>You <code>&lt;font&gt;</code> and <code>&lt;center&gt;</code>.</p>
+                                    
+                                    <p>In the above JavaScript example, <var>para</var> represents a paragraph element.</p>
+                                    
+                                    <p>Select all the text with <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>A</kbd>.</p>
+                                    
+                                    <pre>$ <kbd>ping mozilla.org</kbd></pre>
+                                    <samp>
+                                        PING mozilla.org (63.245.215.20): 56 data bytes
+                                        64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms
+                                    </samp>
+                                </pre>
+
+                                <div class="dropdown-divider mt-3 mb-3"></div>
+                                <h5 for="formula_atividade_selecionada"><i class="far fa-check-circle mr-1"></i>Retorno</h5>
+                                <div class="row col-12">
+                                    <div class="col-6">
+                                        <p>Selecionar retorno <span class=" text-success">verdadeiro</span></p>
+                                        <div id="div_atividades_formula_verdadeiro"></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>Selecionar retorno <span class=" text-danger">falso</span></p>
+                                        <div id="div_atividades_formula_falso"></div>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="p-3 text-right">
+                                    <a id="btn_salvar_formula" onclick="salvarFormula()" class="btn btn-success text-white">Salvar Fórmula</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    
 
                     <!-- Configurações ambiente -->
                     <div class="col-2 animate__animated animate__fadeInDown">
@@ -225,8 +232,9 @@
 
 <script>
     const descricao_atividade = document.getElementById("descricao_atividade")
-    const direcao_atividade_formula = document.getElementById('direcao_atividade_formula')
+    // const direcao_atividade_formula = document.getElementById('direcao_atividade_formula')
     const duracao_atividade_formula = document.getElementById('duracao_atividade_formula')
+    const div_formula = document.getElementById('formula')
     const id_ambiente = {{ ambiente.id }}
     const ambiente = document.getElementById('ambiente')
     // atividades = [ícone, cor fundo, título, direção, direcao_ativada]
@@ -252,8 +260,9 @@
     }
 
     const elementos_formula = {
-        'operacao': [
+        'operacao': 
             {
+                'cor': 'bg-primary-bootstrap',
                 '+':    ['fas fa-plus'],
                 '-':    ['fas fa-minus'],
                 '/':    ['fas fa-divide'],
@@ -264,18 +273,23 @@
                 '<=':   [ 'fas fa-less-than-equal'],
                 '>':    ['fas fa-greater-than'],
                 '>=':   ['fas fa-greater-than-equal'],
-            }
-        ],
-        'atributo': [''],
-        'prioridade': [
+            },
+        'atributo':
+            {
+                'cor': 'bg-danger',
+                'direcao': ['fas fa-route mr-1'],
+                'duracao': ['far fa-clock mr-1']
+            },
+        'prioridade':
             {
                 'parenteses': [],
                 'fecha_parenteses': [],
                 'parenteses': [],
-            }
-        ],
+            },
     }
 
+    let mouseClicado = false
+    let ultimo_elemento_formula_adicionado = false
     let tipo_selecionado = ''
     let objeto_selecionado = ''
     let mapa_simulacao = []
@@ -301,6 +315,8 @@
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
             atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade }}')
             atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior }}')
+            atividade_documento.setAttribute('decisao_verdadeira', '{{ atividade.decisao_verdadeira }}')
+            atividade_documento.setAttribute('decisao_falsa', '{{ atividade.decisao_falsa }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
@@ -328,9 +344,11 @@
             const atividade = document.createElement('div')
             atividade.setAttribute('class', 'align-self-start atividade text-center')
             atividade.setAttribute('id', `${ linha < 10 ? '0' + linha : linha }${ coluna < 10 ? '0' + coluna : coluna }`)
-            atividade.setAttribute('onclick', `ativarAtividade(['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
+            atividade.setAttribute('onclick', `ativarAtividade(event, ['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
+            atividade.setAttribute('onmouseover', `ativarAtividade(event, ['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
+            atividade.setAttribute('onmousedown', 'mouseClicado = false')
 
-            atividade.textContent = '*'
+            atividade.textContent = ''
 
             div_coluna.append(atividade)
         }   
@@ -357,8 +375,14 @@
         })
     }
 
-    ativarAtividade = (coordenada) => {
-        tipo_selecionado == '' ? alert('Selecione um tipo') : configurarAtividade(coordenada, tipo_selecionado)
+    ativarAtividade = (event, coordenada) => {
+        if (event.type == 'mouseover') {
+            if (tipo_selecionado != '' & mouseClicado) {
+                configurarAtividade(coordenada, tipo_selecionado)
+            }
+        } else {
+            tipo_selecionado == '' ? alert('Selecione um tipo') : configurarAtividade(coordenada, tipo_selecionado)
+        }
     }
 
     desmarcarOpcoes = () => {
@@ -437,8 +461,8 @@
             const remover_atividade = document.getElementById('remover_atividade')
 
             nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
-            duracao_atividade_formula.value = elemento_atividade.getAttribute('duracao')
-            direcao_atividade_formula.value = elemento_atividade.getAttribute('direcao')
+            duracao_atividade_formula.setAttribute('value', elemento_atividade.getAttribute('duracao'))
+            // direcao_atividade_formula.setAttribute('value', elemento_atividade.getAttribute('direcao'))
             nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
             duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
 
@@ -461,7 +485,7 @@
         atividade_marcada.innerHTML = '*'
         atividade_marcada.classList.remove('atividade_marcada', atividades[tipo][1], 'atividade_selecionada')
         atividade_marcada.setAttribute('tipo_atividade', '0')
-        atividade_marcada.setAttribute('onclick', `ativarAtividade('${atividade}')`)
+        atividade_marcada.setAttribute('onclick', `ativarAtividade(event, '${atividade}')`)
 
         carregar_configuracoes(false)
     }
@@ -496,7 +520,9 @@
         let direcao = document.getElementById('direcao_atividade_selecionada')
         atividade_marcada.getAttribute('tipo_atividade') == 'D' ? direcao.disabled = true : direcao.disabled = false
 
-        document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+        if (atividade_marcada.getAttribute('tipo_atividade') != 'O') {
+            document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+        }
     }
 
     desmarcarAtividades = () => {
@@ -517,225 +543,6 @@
     adicionarObjeto = (icone) => {
         tipo_selecionado = 'O'
         objeto_selecionado = icone
-    }
-
-    /* -> Fórmulas <--------------------------------------------------- */
-
-    exibirFormula = (atividade) => {
-        document.getElementById('div_formula').style.display = 'block'
-        document.getElementById('formula').focus()
-
-        console.log(direcao_atividade_formula.value)
-        console.log(duracao_atividade_formula.value)
-
-        caminhosDecisao(atividade, true)
-        caminhosDecisao(atividade, false)
-    }
-
-    ocultarFormula = () => {
-        document.getElementById('div_formula').style.display = 'none'
-    }
-
-    caminhosDecisao = (atividade, formula) => {
-        const atividade_selecionada = document.getElementById(`${ atividade }`)
-        const div_atividades_formula = document.getElementById(formula ? 'div_atividades_formula_verdadeiro' : 'div_atividades_formula_falso')
-
-        let linha = parseInt(atividade_selecionada.getAttribute('linha'))
-        let coluna = parseInt(atividade_selecionada.getAttribute('coluna'))
-        
-        coluna < 10 ? coluna = `0${coluna}` : coluna
-        linha < 10 ? linha = `0${linha}` : linha
-
-        const cima      = (parseInt(linha)  - 1) < 10 ? `0${ parseInt(linha)  - 1 }` : parseInt(linha)  - 1
-        const direita   = (parseInt(coluna) + 1) < 10 ? `0${ parseInt(coluna) + 1 }` : parseInt(coluna) + 1
-        const baixo     = (parseInt(linha)  + 1) < 10 ? `0${ parseInt(linha)  + 1 }` : parseInt(linha)  + 1
-        const esquerda  = (parseInt(coluna) - 1) < 10 ? `0${ parseInt(coluna) - 1 }` : parseInt(coluna) - 1
-
-        const caminhos = [
-            [document.querySelector(`[id='${ cima }${ coluna }']:not(.atividade_selecionada)`), 'Cima', 'fas fa-arrow-up'],
-            [document.querySelector(`[id='${ linha }${ direita }']:not(.atividade_selecionada)`), 'Direita', 'fas fa-arrow-right'],
-            [document.querySelector(`[id='${ baixo }${ coluna }']:not(.atividade_selecionada)`), 'Baixo', 'fas fa-arrow-down'],
-            [document.querySelector(`[id='${ linha }${ esquerda }']:not(.atividade_selecionada)`), 'Esquerda', 'fas fa-arrow-left'],
-        ]
-
-        div_atividades_formula.innerHTML = ''
-        
-        for (const [index, valor] of caminhos.entries()) {
-            if (valor[0]) {
-                const a = document.createElement('a')
-                const i = document.createElement('i')
-
-                a.setAttribute('class', 'badge badge-primary text-white m-1 p-2 cursor-pointer')
-                a.setAttribute(
-                    'onclick',
-                    formula ? 'selecionarRetornoFormulaVerdadeiro()' : 'selecionarRetornoFormulaFalso()'
-                )
-
-                i.setAttribute('class', `${ valor[2] } mr-1`)
-                a.append(i)
-
-                a.innerHTML += `${ valor[1] }`
-
-                div_atividades_formula.append(a)
-            }
-        }
-    }
-
-    selecionarRetornoFormulaVerdadeiro = () => {
-        
-    }
-
-    selecionarRetornoFormulaFalso = () => {
-
-    }
-
-    /* -> Vínculos <--------------------------------------------------- */
-
-    vincularAtividade = () => {
-        desmarcarOpcoes()
-        desabilitarAtividadesNaoSelecionadas(true)
-    
-        descricao_atividade.textContent = `Selecione as atividades na sequência de rota desejada`
-
-        document.getElementById('vincular').classList.add('active')
-        document.getElementById('cancelar_vinculos').style.display = 'block'
-    }
-
-    salvarVinculos = () => {
-        const icone = document.getElementById('icone_salvar_vinculos')
-        const salvar = document.getElementById('salvar_vinculos')
-        const cancelar = document.getElementById('cancelar_vinculos')
-        
-        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
-
-        proximo = 1
-        anterior = 0
-        for (vinculo of vinculos) {
-            const atividade_vinculada = document.getElementById(vinculo)
-            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
-            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
-
-            atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo] ? vinculos[proximo] : vinculos[--   proximo])
-            atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
-            
-            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
-            atividade_vinculada.classList.remove('none-events')
-
-            if (proximo < vinculos.length) {
-                proximo++
-                anterior = proximo - 2
-            }
-        }
-
-        setTimeout(() => {
-            icone.setAttribute('class', 'fas fa-wave-square mr-2')
-            salvar.style.display = 'none'
-            cancelar.style.display = 'none'
-
-            vinculos = []
-            rota = 1 
-        }, 2000)
-    }
-
-    cancelarVinculos  = () => {
-        const icone = document.getElementById('icone_cancelar_vinculos')
-        const salvar = document.getElementById('salvar_vinculos')
-        const cancelar = document.getElementById('cancelar_vinculos')
-        
-        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
-
-        for (vinculo of vinculos) {
-            const atividade_vinculada = document.getElementById(vinculo)
-            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
-            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
-
-            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
-            atividade_vinculada.classList.remove('none-events')
-        }
-
-        setTimeout(() => {
-            icone.setAttribute('class', 'fas fa-wave-square mr-2')
-            salvar.style.display = 'none'
-            cancelar.style.display = 'none'
-
-            vinculos = []
-            rota = 1 
-
-            document.getElementById('selecionar_S').click()
-        }, 2000)        
-    }
-
-    gerarMapaSimulacao = (inicio) => {
-        let tipo = inicio.getAttribute('tipo_atividade')
-
-        let id_atividade = parseInt(inicio.getAttribute('id'))
-        let linha = parseInt(inicio.getAttribute('linha'))
-        let coluna = parseInt(inicio.getAttribute('coluna'))
-        let direcao = inicio.getAttribute('direcao')
-
-        let id_proxima_atividade = ''
-        let proxima_atividade = ''
-
-        if (tipo == 'D') {
-            mapaAtividadeDecisao(linha, coluna, direcao, id_atividade, direcao_atividade_anterior)
-        } else if (tipo == 'F') {
-            
-        } else {
-            direcao == 'C' ? linha = linha - 1 :
-                direcao == 'D' ? coluna = coluna + 1 :
-                    direcao == 'B' ? linha = linha + 1 :
-                        direcao == 'E' ? coluna = coluna - 1 : coluna = coluna
-
-            linha < 10 ? linha = `0${linha}` : linha
-            coluna < 10 ? coluna = `0${coluna}` : coluna
-
-            id_proxima_atividade = `${linha}${coluna}`
-            proxima_atividade = document.getElementById(id_proxima_atividade)
-            direcao_atividade_anterior = direcao
-
-            mapa_simulacao.push({
-                [id_atividade]: {[id_proxima_atividade]: document.getElementById(`${id_proxima_atividade}`).getAttribute('title')}
-            })
-
-            gerarMapaSimulacao(proxima_atividade)
-        }
-    }
-
-    mapaAtividadeDecisao = (linha, coluna, direcao, id_atividade, direcao_atividade_anterior) => {
-        let direcoes = [] // cima, direita, baixo, esquerda
-        
-        direcoes[0] = `${linha < 10 ? `0${linha - 1}` : linha - 1}${coluna < 10 ? `0${coluna}` : coluna}`
-        direcoes[1] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna + 1}` : coluna + 1}`
-        direcoes[2] = `${linha < 10 ? `0${linha + 1}` : linha + 1}${coluna < 10 ? `0${coluna}` : coluna}`
-        direcoes[3] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna - 1}` : coluna - 1}`
-
-        direcao_atividade_anterior == 'C' ? direcoes[3] = null :
-            direcao_atividade_anterior == 'D' ? direcoes[2] = null :
-                direcao_atividade_anterior == 'B' ? direcoes[0] = null :
-                    direcao_atividade_anterior == 'E' ? direcoes[1] = null : direcoes[3]
-
-        let atividades = []
-
-        for (direcao in direcoes) {
-            if (direcoes[direcao]) {
-                const elemento = document.getElementById(direcoes[direcao])
-                if (elemento.classList.contains('atividade_selecionada')) {
-                    atividades.push({
-                        [elemento.getAttribute('id')]: elemento.getAttribute('title')
-                    })
-                }
-            }
-        }
-
-        mapa_simulacao.push({
-            [id_atividade]: atividades
-        })
-        // mapa_simulacao.push({
-        //     [id_atividade]: [{'proxima': id_proxima_atividade}]
-        // })
-        // const atividade_cima = `${ linha - 1 }
-
-        // console.log(atividade_cima)
     }
 
     salvarAmbiente = () => {
@@ -813,6 +620,256 @@
         return cookieValue;
     }
 
+    /* ---------------------------------------------------------------- */
+    /* -> Fórmulas <--------------------------------------------------- */
+    /* ---------------------------------------------------------------- */
+
+    exibirFormula = (atividade) => {
+        document.getElementById('div_formula').style.display = 'block'
+        document.getElementById('formula').focus()
+
+        caminhosDecisao(atividade, true)
+        caminhosDecisao(atividade, false)
+    }
+
+    ocultarFormula = () => {
+        document.getElementById('div_formula').style.display = 'none'
+    }
+
+    caminhosDecisao = (atividade, formula) => {
+        const atividade_selecionada = document.getElementById(`${ atividade }`)
+        const div_atividades_formula = document.getElementById(formula ? 'div_atividades_formula_verdadeiro' : 'div_atividades_formula_falso')
+
+        let linha = parseInt(atividade_selecionada.getAttribute('linha'))
+        let coluna = parseInt(atividade_selecionada.getAttribute('coluna'))
+        
+        coluna < 10 ? coluna = `0${coluna}` : coluna
+        linha < 10 ? linha = `0${linha}` : linha
+
+        const cima      = (parseInt(linha)  - 1) < 10 ? `0${ parseInt(linha)  - 1 }` : parseInt(linha)  - 1
+        const direita   = (parseInt(coluna) + 1) < 10 ? `0${ parseInt(coluna) + 1 }` : parseInt(coluna) + 1
+        const baixo     = (parseInt(linha)  + 1) < 10 ? `0${ parseInt(linha)  + 1 }` : parseInt(linha)  + 1
+        const esquerda  = (parseInt(coluna) - 1) < 10 ? `0${ parseInt(coluna) - 1 }` : parseInt(coluna) - 1
+
+        const caminhos = [
+            [document.querySelector(`[id='${ cima }${ coluna }']:not(.atividade_selecionada)`), 'Cima', 'fas fa-arrow-up'],
+            [document.querySelector(`[id='${ linha }${ direita }']:not(.atividade_selecionada)`), 'Direita', 'fas fa-arrow-right'],
+            [document.querySelector(`[id='${ baixo }${ coluna }']:not(.atividade_selecionada)`), 'Baixo', 'fas fa-arrow-down'],
+            [document.querySelector(`[id='${ linha }${ esquerda }']:not(.atividade_selecionada)`), 'Esquerda', 'fas fa-arrow-left'],
+        ]
+
+        div_atividades_formula.innerHTML = ''
+        
+        for (const [index, valor] of caminhos.entries()) {
+            if (valor[0]) {
+                const a = document.createElement('a')
+                const i = document.createElement('i')
+
+                a.setAttribute('class', 'badge badge-primary text-white m-1 p-2 cursor-pointer')
+                a.setAttribute(
+                    'onclick',
+                    formula ? 'selecionarRetornoFormulaVerdadeiro()' : 'selecionarRetornoFormulaFalso()'
+                )
+
+                i.setAttribute('class', `${ valor[2] } mr-1`)
+                a.append(i)
+
+                a.innerHTML += `${ valor[1] }`
+
+                div_atividades_formula.append(a)
+            }
+        }
+    }
+
+    selecionarElementoFormula = (tipo, icone, valor) => {
+        if (ultimo_elemento_formula_adicionado == false && tipo == 'operacao') { return alert('Selecione um atributo para começar sua fórmula!') }
+        if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'atributo')  { return alert('Selecione uma operação para continuar sua fórmula!') }
+
+        if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'operacao') { 'ok '}
+
+        adicionarAtributoFormula(tipo, elementos_formula[tipo][icone][0], elementos_formula[tipo]['cor'], valor)
+        ultimo_elemento_formula_adicionado = 'atributo'
+    }
+
+    adicionarAtributoFormula = (tipo, icone, cor, valor) => {
+        const kbd = document.createElement('kbd')
+
+        kbd.setAttribute('class', `${ cor }`)
+        kbd.setAttribute('tipo', tipo)
+        kbd.setAttribute('valor', valor)
+
+        kbd.innerHTML = `<i class="${ icone }"></i>${ tipo != 'operacao' ? valor : '' }`
+        div_formula.append(kbd)
+    }
+
+    selecionarRetornoFormulaVerdadeiro = () => {
+        
+    }
+
+    selecionarRetornoFormulaFalso = () => {
+
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* -> Vínculos <--------------------------------------------------- */
+    /* ---------------------------------------------------------------- */
+
+    vincularAtividade = () => {
+        desmarcarOpcoes()
+        desabilitarAtividadesNaoSelecionadas(true)
+    
+        descricao_atividade.textContent = `Selecione as atividades na sequência de rota desejada`
+
+        document.getElementById('vincular').classList.add('active')
+        document.getElementById('cancelar_vinculos').style.display = 'block'
+    }
+
+    salvarVinculos = () => {
+        const icone = document.getElementById('icone_salvar_vinculos')
+        const salvar = document.getElementById('salvar_vinculos')
+        const cancelar = document.getElementById('cancelar_vinculos')
+        
+        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
+
+        proximo = 1
+        anterior = 0
+        for (vinculo of vinculos) {
+            const atividade_vinculada = document.getElementById(vinculo)
+            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
+            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
+
+            atividade_vinculada.setAttribute('proxima_atividade', vinculos[proximo] ? vinculos[proximo] : vinculos[--   proximo])
+            atividade_vinculada.setAttribute('atividade_anterior', vinculos[anterior])
+            
+            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
+            atividade_vinculada.classList.remove('none-events')
+
+            if (proximo < vinculos.length) {
+                proximo++
+                anterior = proximo - 2
+            }
+        }
+
+        setTimeout(() => {
+            icone.setAttribute('class', 'fas fa-wave-square mr-2')
+            salvar.style.display = 'none'
+            cancelar.style.display = 'none'
+
+            vinculos = []
+            rota = 1 
+        }, 2000)
+    }
+
+    cancelarVinculos  = () => {
+        const icone = document.getElementById('icone_cancelar_vinculos')
+        const salvar = document.getElementById('salvar_vinculos')
+        const cancelar = document.getElementById('cancelar_vinculos')
+        
+        icone.setAttribute('class', 'fas fa-circle-notch fa-spin mr-2')
+
+        for (vinculo of vinculos) {
+            const atividade_vinculada = document.getElementById(vinculo)
+            const tipo_atividade = atividade_vinculada.getAttribute('tipo_atividade')
+            const direcao_atividade = atividade_vinculada.getAttribute('direcao')
+
+            atividade_vinculada.innerHTML = `<i class="${ tipo_atividade == 'R' ? rotas[direcao_atividade] : atividades[tipo_atividade][0] }"></i>`
+            atividade_vinculada.classList.remove('none-events')
+        }
+
+        setTimeout(() => {
+            icone.setAttribute('class', 'fas fa-wave-square mr-2')
+            salvar.style.display = 'none'
+            cancelar.style.display = 'none'
+
+            vinculos = []
+            rota = 1 
+
+            document.getElementById('selecionar_S').click()
+        }, 2000)        
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* -> Adicionar atividade movimento <------------------------------ */
+    /* ---------------------------------------------------------------- */
+
+    
+    /* ---------------------------------------------------------------- */
+    /* -> Nada <--------------------------------------------------- */
+    /* ---------------------------------------------------------------- */
+
+    gerarMapaSimulacao = (inicio) => {
+        let tipo = inicio.getAttribute('tipo_atividade')
+
+        let id_atividade = parseInt(inicio.getAttribute('id'))
+        let linha = parseInt(inicio.getAttribute('linha'))
+        let coluna = parseInt(inicio.getAttribute('coluna'))
+        let direcao = inicio.getAttribute('direcao')
+
+        let id_proxima_atividade = ''
+        let proxima_atividade = ''
+
+        if (tipo == 'D') {
+            mapaAtividadeDecisao(linha, coluna, direcao, id_atividade, direcao_atividade_anterior)
+        } else if (tipo == 'F') {
+            
+        } else {
+            direcao == 'C' ? linha = linha - 1 :
+                direcao == 'D' ? coluna = coluna + 1 :
+                    direcao == 'B' ? linha = linha + 1 :
+                        direcao == 'E' ? coluna = coluna - 1 : coluna = coluna
+
+            linha < 10 ? linha = `0${linha}` : linha
+            coluna < 10 ? coluna = `0${coluna}` : coluna
+
+            id_proxima_atividade = `${linha}${coluna}`
+            proxima_atividade = document.getElementById(id_proxima_atividade)
+            direcao_atividade_anterior = direcao
+
+            mapa_simulacao.push({
+                [id_atividade]: {[id_proxima_atividade]: document.getElementById(`${id_proxima_atividade}`).getAttribute('title')}
+            })
+
+            gerarMapaSimulacao(proxima_atividade)
+        }
+    }
+
+    mapaAtividadeDecisao = (linha, coluna, direcao, id_atividade, direcao_atividade_anterior) => {
+        let direcoes = [] // cima, direita, baixo, esquerda
+        
+        direcoes[0] = `${linha < 10 ? `0${linha - 1}` : linha - 1}${coluna < 10 ? `0${coluna}` : coluna}`
+        direcoes[1] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna + 1}` : coluna + 1}`
+        direcoes[2] = `${linha < 10 ? `0${linha + 1}` : linha + 1}${coluna < 10 ? `0${coluna}` : coluna}`
+        direcoes[3] = `${linha < 10 ? `0${linha}` : linha}${coluna < 10 ? `0${coluna - 1}` : coluna - 1}`
+
+        direcao_atividade_anterior == 'C' ? direcoes[3] = null :
+            direcao_atividade_anterior == 'D' ? direcoes[2] = null :
+                direcao_atividade_anterior == 'B' ? direcoes[0] = null :
+                    direcao_atividade_anterior == 'E' ? direcoes[1] = null : direcoes[3]
+
+        let atividades = []
+
+        for (direcao in direcoes) {
+            if (direcoes[direcao]) {
+                const elemento = document.getElementById(direcoes[direcao])
+                if (elemento.classList.contains('atividade_selecionada')) {
+                    atividades.push({
+                        [elemento.getAttribute('id')]: elemento.getAttribute('title')
+                    })
+                }
+            }
+        }
+
+        mapa_simulacao.push({
+            [id_atividade]: atividades
+        })
+        // mapa_simulacao.push({
+        //     [id_atividade]: [{'proxima': id_proxima_atividade}]
+        // })
+        // const atividade_cima = `${ linha - 1 }
+
+        // console.log(atividade_cima)
+    }
+
     /* -> Carregar ambiente <--------------------------------------------------- */
 
     carregar_configuracoes = (primeiro_acesso) => {
@@ -833,6 +890,16 @@
 
     document.onkeypress = function(evento) {
         if (evento.keyCode == 118) { vincularAtividade() }
+    }
+
+    /* -> Mouse está sendo clicado <--------------------------------------------- */
+
+    document.body.onmousedown = function() { 
+        mouseClicado = true
+    }
+    
+    document.body.onmouseup = function() {
+        mouseClicado = false
     }
 </script>
 

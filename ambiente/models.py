@@ -64,6 +64,8 @@ class Atividade(models.Model):
     versao = models.IntegerField()
     proxima_atividade = models.CharField('Próxima atividade', max_length=255)
     atividade_anterior = models.CharField('Atividade Anterior', max_length=255)
+    decisao_verdadeira = models.CharField('Decisão verdadeira', max_length=255, blank=True, null=True)
+    decisao_falsa = models.CharField('Decisão Falsa', max_length=255, blank=True, null=True)
     linha = models.CharField('linha', max_length=10)
     coluna = models.CharField('coluna', max_length=10)
     icone = models.CharField(max_length=255, blank=True, null=True)
