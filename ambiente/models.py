@@ -73,7 +73,7 @@ class Atividade(models.Model):
     direcao = models.CharField('Direcao', max_length=2, choices=DIRECAO_CHOICES, blank=True, null=True)
     duracao = models.IntegerField('Tempo em segundos')
     tipo = models.CharField('Tipo de opção', max_length=1, choices=TIPO_CHOICES)
-    formula = models.CharField('Fórmula', max_length=1000)
+    formula = models.TextField('Fórmula', blank=True, null=True)
     
     def __str__(self):
         return f'{self.id} - ({self.linha}-{self.coluna}) - {self.atividade}'

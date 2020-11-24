@@ -34,7 +34,6 @@ def ambiente(request, id=0, versao=0):
         'atividades': atividades,
         'versoes': versoes_atividades,
         'versao_carregada': versao_carregada,
-        'formula': ''
     }
 
     return render(request, 'ambiente/ambiente.html', dados)
@@ -50,21 +49,6 @@ def salvarAmbiente(request):
         atualizarAtividades(ambiente, dados['atividades'])
 
         return JsonResponse({'versao': ambiente.versao})
-        # try:
-        #     dados = json.loads(request.POST.get('dados', ''))
-
-        #     print(f'linha: { dados["linha"] }')
-
-        #     ambiente = Ambiente.objects.get(id=int(dados['ambiente']))
-        #     ambiente.versao = ambiente.versao + 1
-        #     ambiente.save()
-
-        #     atualizarAtividades(ambiente, dados['atividades'])
-
-        #     return JsonResponse({'versao': ambiente.versao})
-        # except Exception as e:
-        #     print(e)
-        #     return JsonResponse({'erro': 'erro'})
 
 def atualizarAtividades(ambiente, atividades):
     for atividade, dados in atividades.items():
@@ -84,6 +68,9 @@ def registrarAtividade(ambiente, atividade, dados, versao):
         tipo=dados['tipo'],
         icone=dados['icone'],
         versao=versao,
+        formula=dados['formula'],
+        decisao_verdadeira=dados['decisao_verdadeira'],
+        decisao_falsa=dados['decisao_falsa'],
     )
 
     op.save()

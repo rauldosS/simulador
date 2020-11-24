@@ -11,8 +11,6 @@
     .atividade {
         max-height: 25px !important;
         max-width: 25px !important;
-        width: 25px !important;
-        height: 25px !important;
     }
 
     .atividade_selecionada:after {
@@ -37,6 +35,10 @@
         bottom: 14px;
         left: 8px;
         opacity: 1;
+    }
+
+    .campo-formula {
+        max-width: 100px;
     }
 </style>
 <div class="container mt-3">
@@ -161,7 +163,7 @@
                                             </div>
                                         </div>
                                         <div class="col-6 mt-3">
-                                            <p><span class=" text-danger"><i class="fas fa-calculator mr-1"></i>Operações</span></p>
+                                            <p><span><i class="fas fa-calculator mr-1" style="color: #6b6f82 !important"></i>Operações</span></p>
                                             <div id="div_operacoes_simulacao">
                                                 <!-- <a class="badge badge-danger text-white m-1 p-2" onclick="selecionarElementoFormula()"><i class="fas fa-route mr-1"></i></i>Direção</a> -->
                                                 <kbd onclick="selecionarElementoFormula('operacao', '+', '+')"   class="cursor-pointer"><i class="fas fa-plus"></i></kbd>
@@ -176,12 +178,19 @@
                                                 <kbd onclick="selecionarElementoFormula('operacao', '>=', '>=')"  class="cursor-pointer"><i class="fas fa-greater-than-equal"></i></kbd>
                                             </div>
                                         </div>
+                                        <div class="col-6 mt-3">
+                                            <p><span><i class="fas fa-map-marked-alt mr-1" style="color: #6b6f82 !important"></i>Campos</span></p>
+                                            <div id="div_campos_simulacao">
+                                                <!-- <a id="direcao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'direcao', this.getAttribute('value'))" value=""><i class="fas fa-route mr-1"></i></i>Direção</a> -->
+                                                <a id="campo_atividade_formula" class="badge text-white m-1 p-2 cursor-pointer" style="background-color: #6b6f82 !important;" onclick="selecionarElementoFormula('campo', 'campo', this.getAttribute('value'))" value="campo"><i class="fas fa-keyboard mr-1"></i>Campo de texto</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="dropdown-divider mt-3 mb-3"></div>
                                 <h5 for="formula_atividade_selecionada"><i class="fas fa-project-diagram mr-1"></i>Fórmula</h5>
-                                <div id="formula" class="m-3 p-3 border rounded"></div>
+                                <div id="formula" class="m-3 p-3 border rounded d-flex d-flex align-items-center"></div>
 
                                 <input id="quantidade_participantes" type="text" class="form-control" placeholder="Código fórmula" disabled></input>
 
@@ -203,12 +212,14 @@
                                 <h5 for="formula_atividade_selecionada"><i class="far fa-check-circle mr-1"></i>Retorno</h5>
                                 <div class="row col-12">
                                     <div class="col-6">
-                                        <p>Selecionar retorno <span class=" text-success">verdadeiro</span></p>
-                                        <div id="div_atividades_formula_verdadeiro"></div>
+                                        <p>Selecionar retorno <span class="text-success">verdadeiro</span></p>
+                                        <div id="div_atividades_formula_verdadeiro"class="btn-group" role="verdadeiro"></div>
+                                        <p id="decisao_verdadeira_selecionado" class="p-3 text-success"></p>
                                     </div>
                                     <div class="col-6">
-                                        <p>Selecionar retorno <span class=" text-danger">falso</span></p>
-                                        <div id="div_atividades_formula_falso"></div>
+                                        <p>Selecionar retorno <span class="text-danger">falso</span></p>
+                                        <div id="div_atividades_formula_falso"class="btn-group" role="falso"></div>
+                                        <p id="decisao_falsa_selecionado" class="p-3 text-danger"></p>
                                     </div>
                                 </div>
                                 <div class="p-3 text-right">
@@ -312,7 +323,7 @@
                 'cor': 'bg-danger',
                 'direcao': ['fas fa-route mr-1', 'simulacao'],
                 'duracao': ['far fa-clock mr-1', 'simulacao'],
-                'temperatura': ['fas fa-arrow-up mr-1', 'participante']
+                'temperatura': ['fas fa-temperature-low mr-2', 'participante']
             },
         'prioridade':
             {
@@ -334,7 +345,7 @@
     }
 
     let mouseClicado = false
-    let ultimo_elemento_formula_adicionado = false
+    let camposFormula = 1
     let tipo_selecionado = ''
     let objeto_selecionado = ''
     let mapa_simulacao = []
@@ -342,6 +353,9 @@
     let vinculo_inicial = ''
     let vinculos = []
     let rota = 1
+
+    let objeto_formula = {}
+    let ultimo_elemento_formula_adicionado = false
 
     carregar_atividades = () => {
         let atividade_documento = ''
@@ -361,11 +375,12 @@
             atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade }}')
             atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior }}')
             atividade_documento.setAttribute('decisao_verdadeira', '{{ atividade.decisao_verdadeira }}')
+            atividade_documento.setAttribute('formula', '{{ atividade.formula|safe }}')
             atividade_documento.setAttribute('decisao_falsa', '{{ atividade.decisao_falsa }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
-            atividade_documento.setAttribute('conteudo', '{{ atividade.linha }}{{ atividade.coluna }} - {{ atividade.atividade }} - {{ atividade.duracao }}s - ')
+            atividade_documento.setAttribute('conteudo', '{{ atividade.linha }}{{ atividade.coluna }} - {{ atividade.atividade }} - {{ atividade.duracao }}s')
 
             i = document.createElement('i')
             
@@ -394,7 +409,7 @@
             atividade.setAttribute('onmouseover', `ativarAtividade(event, ['${ linha < 10 ? '0' + linha : linha }', '${ coluna < 10 ? '0' + coluna : coluna }'])`)
             atividade.setAttribute('onmousedown', 'mouseClicado = false')
 
-            atividade.textContent = ''
+            atividade.textContent = '*'
 
             div_coluna.append(atividade)
         }   
@@ -634,12 +649,15 @@
                     'linha': atividade.getAttribute('linha'),
                     'proxima_atividade': atividade.getAttribute('proxima_atividade'),
                     'atividade_anterior': atividade.getAttribute('atividade_anterior'),
+                    'decisao_verdadeira': atividade.getAttribute('decisao_verdadeira'),
+                    'decisao_falsa': atividade.getAttribute('decisao_falsa'),
                     'sequencia': atividade.getAttribute('sequencia'),
                     'coluna': atividade.getAttribute('coluna'),
                     'direcao': atividade.getAttribute('direcao'),
                     'duracao': atividade.getAttribute('duracao'),
                     'tipo': atividade.getAttribute('tipo_atividade'),
-                    'icone': atividade.getAttribute('icone')
+                    'icone': atividade.getAttribute('icone'),
+                    'formula': atividade.getAttribute('formula')
                 }
 
             dict_atividades[id] = op
@@ -676,6 +694,8 @@
         document.getElementById('div_formula').style.display = 'block'
         document.getElementById('formula').focus()
 
+        objeto_formula = {}
+
         caminhosDecisao(atividade, true)
         caminhosDecisao(atividade, false)
     }
@@ -710,39 +730,64 @@
         
         for (const [index, valor] of caminhos.entries()) {
             if (valor[0]) {
-                const a = document.createElement('a')
+                const retorno = formula ? 'verdadeiro' : 'falso'
+                const button = document.createElement('button')
+                const coordenada_atividade = valor[0].getAttribute('id')
                 const i = document.createElement('i')
 
-                a.setAttribute('class', 'badge badge-primary text-white m-1 p-2 cursor-pointer')
-                a.setAttribute(
-                    'onclick',
-                    formula ? 'selecionarRetornoFormulaVerdadeiro()' : 'selecionarRetornoFormulaFalso()'
+                button.setAttribute('class', `btn btn-secondary retorno`)
+                button.setAttribute('type', 'button')
+                button.setAttribute('id', `${ retorno }${ coordenada_atividade }`)
+                button.setAttribute('atividade', `${ coordenada_atividade }`)
+                button.setAttribute(
+                    'onclick', `selecionarRetornoFormula('${ retorno }', '${ coordenada_atividade }', '${ valor[1] }')`
                 )
 
-                i.setAttribute('class', `${ valor[2] } mr-1`)
-                a.append(i)
+                i.setAttribute('class', `${ valor[2] } mr-2`)
+                button.append(i)
 
-                a.innerHTML += `${ valor[1] }`
+                button.innerHTML += `${ valor[1] }`
 
-                div_atividades_formula.append(a)
+                div_atividades_formula.append(button)
             }
         }
     }
 
     selecionarElementoFormula = (tipo, item, valor) => {
+        if (tipo == 'campo') { return adicionarCampoFormula() }
+
         if (ultimo_elemento_formula_adicionado == false && tipo == 'operacao') { return alert('Selecione um atributo para começar sua fórmula!') }
         if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'atributo')  { return alert('Selecione uma operação para continuar sua fórmula!') }
+        if (ultimo_elemento_formula_adicionado == 'operacao' && tipo == 'operacao')  { return }
 
         if (ultimo_elemento_formula_adicionado == 'atributo' && tipo == 'operacao') { 'ok '}
 
         adicionarAtributoFormula(tipo, item, elementos_formula[tipo]['cor'], valor)
-        ultimo_elemento_formula_adicionado = 'atributo'
+        ultimo_elemento_formula_adicionado = tipo
+    }
+
+    adicionarCampoFormula = () => {
+        const campo = document.createElement('input')
+
+        campo.setAttribute('type', 'text')
+        campo.setAttribute('tipo', 'campo')
+        campo.setAttribute('onkeydown', 'atualizarValorCampo(this)')
+        campo.setAttribute('class', 'form-control d-flex align-items-center mr-1 campo-formula')
+        campo.setAttribute('id', `campo_formula${ camposFormula }`)
+        campo.setAttribute('placeholder', `Campo ${ camposFormula }`)
+
+        div_formula.append(campo)
+        adicionarCampoFormula++
+    }
+
+    atualizarValorCampo = (campo) => {
+        campo.setAttribute('valor', campo.value)
     }
 
     adicionarAtributoFormula = (tipo, item, cor, valor) => {
         const kbd = document.createElement('kbd')
 
-        kbd.setAttribute('class', `${ cor } mr-1`)
+        kbd.setAttribute('class', `${ cor } mr-1 d-flex align-items-center`)
         kbd.setAttribute('tipo', tipo)
         kbd.setAttribute('valor', valor)
 
@@ -752,12 +797,62 @@
         div_formula.append(kbd)
     }
 
-    selecionarRetornoFormulaVerdadeiro = () => {
+    selecionarRetornoFormula = (tipo_retorno, atividade, nome) => {
+        const retorno_selecionado = document.getElementById(`${ tipo_retorno }${ atividade }`)
+        const decisao_verdadeira_selecionado = document.getElementById('decisao_verdadeira_selecionado')
+        const decisao_falsa_selecionado = document.getElementById('decisao_falsa_selecionado')
         
+        ativarItems(document.querySelectorAll('.retorno'))
+
+        if (tipo_retorno == 'verdadeiro') {
+            desativarItem(document.getElementById(`falso${ atividade }`))
+            atividade_marcada.setAttribute('decisao_verdadeira', atividade)
+
+            decisao_verdadeira_selecionado.innerHTML = `Retorno selecionado: <b>${ nome }</b>`
+        } else {
+            desativarItem(document.getElementById(`verdadeiro${ atividade }`))
+            atividade_marcada.setAttribute('decisao_falsa', atividade)
+            
+            decisao_falsa_selecionado.innerHTML = `Retorno selecionado: <b>${ nome }</b>`
+        }
     }
 
-    selecionarRetornoFormulaFalso = () => {
+    desativarItem = (item) => {
+        item.disabled = true
+        item.classList.add('disabled')
+    }
 
+    ativarItems = (items) => {
+        items.forEach(i => {
+            i.disabled = false
+            i.classList.remove('disabled')
+        })
+    }
+
+    salvarFormula = () => {
+        const div_formula = Array.from(document.getElementById('formula').children)
+        let formula = []
+
+        if (div_formula.length > 2) {
+            if (atividade_marcada.getAttribute('decisao_verdadeira') == '' || atividade_marcada.getAttribute('decisao_verdadeira') == 'None') { return alert('Selecione uma opção para RETORNO VERDADEIRO') }
+            if (atividade_marcada.getAttribute('decisao_falsa') == '' || atividade_marcada.getAttribute('decisao_falsa') == 'None') { return alert('Selecione uma opção para RETORNO FALSO') }
+
+            div_formula.forEach(function (valor, i) {
+                const form = {
+                    'tipo': valor.getAttribute('tipo'),
+                    'origem': valor.getAttribute('origem_atributo') ? valor.getAttribute('origem_atributo') : '',
+                    'valor': valor.getAttribute('valor')
+                }
+
+                formula.push(form)
+            })
+
+            objeto_formula = Object.assign(objeto_formula, { 'formula': formula })
+
+            atividade_marcada.setAttribute('formula', JSON.stringify(objeto_formula))
+        } else {
+            return alert('Finalize a fórmula antes de salvar!')
+        }
     }
 
     /* ---------------------------------------------------------------- */
@@ -928,7 +1023,6 @@
         const div_atributos_participante = document.getElementById('div_atributos_participante')
 
         for (const [atributo, opcoes] of Object.entries(configuracao_predefinicao[predefinicao]['participante'])) {
-            console.log(atributo, opcoes)
             const a = document.createElement('a')
 
             a.setAttribute('class', 'badge badge-success text-white m-1 p-2 cursor-pointer')
