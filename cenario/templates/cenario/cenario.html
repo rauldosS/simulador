@@ -168,6 +168,12 @@
         'DC': 'fas fa-question-circle',
     }
 
+    const estados = {
+        'Saudável': 'text-primary',
+        'Infeccioso': 'text-danger',
+        'Exposto': 'text-warning'
+    }
+
     let tipo_selecionado = ''
     let objeto_selecionado = ''
     let mapa_simulacao = ''
@@ -186,16 +192,20 @@
 
             atividade_documento.innerHTML = ''
             atividade_documento.classList.add('{{ atividade.tipo }}' == 'O' ? 'bg-white' : atividades['{{ atividade.tipo }}'][1], 'atividade_selecionada')
-            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('${'{{ atividade.atividade }}'}', '${'{{ atividade.tipo }}'}')`)
+            atividade_documento.setAttribute('onclick', `atualizarMenuEdicao('{{ atividade.linha }}{{ atividade.coluna }}', '${'{{ atividade.tipo }}'}')`)
             atividade_documento.setAttribute('title', '{{ atividade.atividade }}')
             atividade_documento.setAttribute('linha', '{{ atividade.linha }}')
             atividade_documento.setAttribute('coluna', '{{ atividade.coluna }}')
             atividade_documento.setAttribute('direcao', '{{ atividade.direcao }}')
-            atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade|safe }}')
-            atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior|safe }}')
+            atividade_documento.setAttribute('proxima_atividade', '{{ atividade.proxima_atividade }}')
+            atividade_documento.setAttribute('atividade_anterior', '{{ atividade.atividade_anterior }}')
+            atividade_documento.setAttribute('decisao_verdadeira', '{{ atividade.decisao_verdadeira }}')
+            atividade_documento.setAttribute('formula', '{{ atividade.formula|safe }}')
+            atividade_documento.setAttribute('decisao_falsa', '{{ atividade.decisao_falsa }}')
             atividade_documento.setAttribute('duracao', '{{ atividade.duracao }}')
             atividade_documento.setAttribute('tipo_atividade', '{{ atividade.tipo }}')
             atividade_documento.setAttribute('icone', '{{ atividade.icone }}')
+            atividade_documento.setAttribute('conteudo', '{{ atividade.linha }}{{ atividade.coluna }} - {{ atividade.atividade }} - {{ atividade.duracao }}s')
 
             i = document.createElement('i')
 
@@ -329,7 +339,9 @@
         const id_atividade = atividade.getAttribute('id')
         const atividade_atual = document.getElementById(id_atividade)
         const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
+        let retorno_atividade = false
 
+        tipo_atividade_atual == 'D' ? retorno_atividade = decisao(atividade_atual, participante) : retorno_atividade = false
         console.log('------------------------------')
         console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`)
         console.log('Número participante:', numero_participante)
@@ -343,8 +355,8 @@
             'conteudo',
             `Participante: ${ numero_participante } - ${ participantes[numero_participante].nome } - ${ participantes[numero_participante].estado } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`
         )
-        
-        atualizarIcone(participantes[numero_participante], id_atividade, tipo_atividade_atual)
+
+        atualizarIcone(participantes[numero_participante], id_atividade, tipo_atividade_atual, false)
         
         setTimeout(() => {
             /* -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM) */
@@ -364,17 +376,48 @@
                     executarAtividade(primeira_atividade, participantes[numero_participante], numero_participante)
                 }
             }
+
+            atualizarIcone(participantes[numero_participante], id_atividade, tipo_atividade_atual, true)
+            atividade_atual.removeAttribute('conteudo')
+            atividade_atual.classList.remove('participante_atividade')
         }, (duracao*1000) + 1)
 
     }
 
-    atualizarIcone = (participante, atividade, tipo_atividade) => {
-        const atividade_ = document.getElementById(atividade)
+    atualizarIcone = (participante, atividade, tipo_atividade, anterior) => {
+        let atividade_ = document.getElementById(atividade)
 
-        atividade_.innerHTML = `<i class='${ atividades[tipo_atividade][3] } text-white'></i>`
+        atividade_.innerHTML = `<i class='${ anterior ? tipo_atividade = 'R' ? rotas[document.getElementById(atividade).getAttribute('direcao')] : atividades[tipo_atividade][0] : atividades[tipo_atividade][3] + ' ' + estados[participante['estado']] } text-white'></i>`
     }
 
-    // <i class="fas fa-walking"></i>
+    /* --------------------------------------------------------------------- */
+    /* -> Decisão  <-------------------------------------------------------- */
+    /* --------------------------------------------------------------------- */
+
+    decisao = (atividade, participante) => {
+        console.log(atividade.getAttribute('formula'))
+        const formula_ = JSON.parse(atividade.getAttribute('formula'))
+        let atributo_ = ''
+
+        console.log(formula_['formula'])
+
+        formula_[0]['origem'] == 'participante' && formula_[0]['valor'] == '>' ? atributo_ = decisaoIgual(participante[toLowerCase(formula_[0]['valor'])], formula_[2]['valor']) : atributo_ = decisaoIgual(atividade.getAttribute(toLowerCase(formula_[0]['valor'])), formula_[2]['valor'])
+
+        console.log(atributo_)
+        // for (const [index, valor] of formula_.entries()) {}
+        // 0: {tipo: "atributo", origem: "participante", valor: "Temperatura"}
+        // 1: {tipo: "operacao", origem: "", valor: ">"}
+        // 2: {tipo: "campo", origem: "", valor: "37,"}
+
+        // [atributo] (participante, sistemula) [operacao] [campo]
+    }
+
+    decisaoIgual = (atributo, campo) => { return atributo == campo }
+    decisaoSomar = (atributo, campo) => { return atributo + campo }
+    decisaoMaior = (atributo, campo) => { return atributo > campo }
+    decisaoMenor = (atributo, campo) => { return atributo < campo }
+    decisaoMaiorIgual = (atributo, campo) => { return atributo >= campo }
+    decisaoMenorIgual = (atributo, campo) => { return atributo <= campo }
 
     /* --------------------------------------------------------------------- */
     /* -> Temporizadoras  <--------------------------------------------------- */
@@ -415,22 +458,18 @@
 
     instanciarParticipanteCOVID = (quantidade_participantes) => {
         class Participante {
-            constructor(nome, estado, atividades) {
+            constructor(nome, estado, temperatura, atividades) {
                 this.nome = nome
                 this.estado = estado,
+                this.temperatura = temperatura,
                 this.atividades = atividades
             }
         }
 
         const estado_paciente = ['Saudável', 'Infeccioso', 'Exposto']
-        const estados = {
-            'Saudável': 'bg-primary-bootstrap',
-            'Infeccioso': 'bg-danger',
-            'Exposto': 'bg-warning'
-        }
 
         for (i = 0; i < quantidade_participantes; i++) {
-            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], [])
+            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], getInteiroAleatorio(26, 31),[])
             participantes.push(p)
         }
     }

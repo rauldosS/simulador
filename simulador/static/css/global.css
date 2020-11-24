@@ -625,7 +625,7 @@ a.active:not([href]):hover {
 }
 
 .badge-simulacao {
-  padding: 1rem;
+  padding: 0.7rem;
   font-size: initial;
 }
 

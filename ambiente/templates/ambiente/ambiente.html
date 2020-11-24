@@ -48,7 +48,7 @@
                     <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
                     <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
                 <div class="d-flex flex-end w-100 row">
-                    <span class="badge badge-primary" style="height: min-content;">{{ ambiente.predefinicao.nome }}</span>
+                    <span class="badge badge-primary badge-simulacao" style="height: min-content;">{{ ambiente.predefinicao.nome }}</span>
                     <div class="input-group mb-3 col-3">
                         <div class="input-group-prepend" style="height: 38px;">
                           <label class="input-group-text" for="versao">Versão</label>
@@ -134,17 +134,18 @@
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
-                    <div class="row col-8 animate__animated animate__zoomInUp animate__delay-1s">
+                    <div class="row col-8 animate__animated animate__zoomInUp d-block">
                         <div class="row col-12">
                             <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
                             </div>
-                            <p class="col-5 text-right align-self-center">
-                                <span id="descricao_atividade" class="badge badge-primary"></span>
+                            <p class="col-6 text-right align-self-center">
+                                <span id="descricao_atividade" class="badge badge-primary badge-simulacao"></span>
+                                <span id="tempo_simulacao" class="badge badge-danger badge-simulacao"></span>
                             </p>
-                            <div class="col-12 d-flex" id="ambiente">
-                            </div>
                         </div>
+
+                        <div class="col-12 d-flex" id="ambiente"></div>
                         
                         <div id="div_formula" class="col-12 p-3 animate__animated animate__fadeInDown">
                             <div class="form-group border p-3 rounded">
@@ -255,17 +256,9 @@
                             <a onclick="selecionarTipo('O', 'far fa-hospital', 'fa-hospital')" tipo="fa-hospital" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-hospital mr-2"></i>Farmácia</a>
                             <a onclick="selecionarTipo('O', 'far fa-building', 'fa-building')" tipo="fa-building" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-building mr-2"></i>Prédio</a>
                         </div>
-                        <p class="pt-3">Edição</p>
+                        <p class="pt-3">Ambiente</p>
                         <div class="dropdown-divider"></div>
-                        <div class="form-group">
-                            <label for="asfasf_atividade_selecionada">Opção</label>
-                            <input id="asfasf_atividade_selecionada" type="text" class="form-control" placeholder="Nome opção">
-                        </div>
-                    </div>
-
-                    
-                    <div class="col-12 text-right">
-                        <a id="btn_salvar" onclick="salvarAmbiente()" class="btn btn-success text-white">Salvar Ambiente</a>
+                        <a id="btn_salvar" onclick="salvarAmbiente()" class="btn btn-success text-white w-100">Salvar Ambiente</a>
                     </div>
                 </div>
             </div>
