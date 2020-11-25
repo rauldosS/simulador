@@ -102,8 +102,8 @@
                             <input id="direcao_atividade_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
                         </div>
                         <div class="form-group">
-                            <label for="formula_atividade_selecionada">Fórmula</label>
-                            <input id="formula_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                            <label for="formula_['formula']atividade_selecionada">Fórmula</label>
+                            <input id="formula_['formula']atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
@@ -238,7 +238,9 @@
         }
     }
 
+    /* --------------------------------------------------------------------- */
     /* Funções de seleção de atividade */
+    /* --------------------------------------------------------------------- */
 
     atualizarMenuEdicao = (atividade, tipo) => {
         const elemento_atividade = document.getElementById(atividade)
@@ -303,7 +305,9 @@
         return cookieValue;
     }
 
-    /* -> Simulação <--------------------------------------------------- */
+    /* --------------------------------------------------------------------- */
+    /* -> Simulação <------------------------------------------------------- */
+    /* --------------------------------------------------------------------- */
 
     iniciarSimulacao = (elemento) => {
         if (simulacao_iniciada === false) {
@@ -334,14 +338,24 @@
 
     executarAtividade = (atividade, participante, numero_participante) => {
         const primeira_atividade = document.querySelector("[tipo_atividade='I']")
-        const proxima_atividade = document.getElementById(atividade.getAttribute('proxima_atividade'))
+        let proxima_atividade =  ''
+
+        proxima_atividade = document.getElementById(atividade.getAttribute('proxima_atividade'))
+
         const duracao = atividade.getAttribute('duracao')
         const id_atividade = atividade.getAttribute('id')
         const atividade_atual = document.getElementById(id_atividade)
         const tipo_atividade_atual = atividade.getAttribute('tipo_atividade')
         let retorno_atividade = false
 
-        tipo_atividade_atual == 'D' ? retorno_atividade = decisao(atividade_atual, participante) : retorno_atividade = false
+        if (tipo_atividade_atual == 'D') {
+            retorno_atividade = decisao(atividade_atual, participante)
+            
+            retorno_atividade ? proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_verdadeira')) : proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_falsa'))
+        }
+
+        console.log(`\n\nPRÓXIMA ATIVIDADE: ${ proxima_atividade.getAttribute('id') }`)
+
         console.log('------------------------------')
         console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`)
         console.log('Número participante:', numero_participante)
@@ -395,29 +409,28 @@
     /* --------------------------------------------------------------------- */
 
     decisao = (atividade, participante) => {
-        console.log(atividade.getAttribute('formula'))
         const formula_ = JSON.parse(atividade.getAttribute('formula'))
-        let atributo_ = ''
+        const origem = formula_['formula'][0]['origem'].toString()
+        const campo_formula = formula_['formula'][2]['valor']
 
-        console.log(formula_['formula'])
+        let atributo
 
-        formula_[0]['origem'] == 'participante' && formula_[0]['valor'] == '>' ? atributo_ = decisaoIgual(participante[toLowerCase(formula_[0]['valor'])], formula_[2]['valor']) : atributo_ = decisaoIgual(atividade.getAttribute(toLowerCase(formula_[0]['valor'])), formula_[2]['valor'])
-
-        console.log(atributo_)
-        // for (const [index, valor] of formula_.entries()) {}
-        // 0: {tipo: "atributo", origem: "participante", valor: "Temperatura"}
-        // 1: {tipo: "operacao", origem: "", valor: ">"}
-        // 2: {tipo: "campo", origem: "", valor: "37,"}
-
-        // [atributo] (participante, sistemula) [operacao] [campo]
+        if (origem == 'participante') {
+            const valor_atributo = formula_['formula'][0]['valor'].toString().toLowerCase()
+            atributo = participante[valor_atributo.toString()]
+        } else {
+            atributo = atividade.getAttribute(participante[formula_['formula']['valor']])
+        }
+        
+        if (formula_['formula'][1]['valor'] == '>') { return decisaoMaior(atributo, campo_formula) }
     }
 
-    decisaoIgual = (atributo, campo) => { return atributo == campo }
-    decisaoSomar = (atributo, campo) => { return atributo + campo }
-    decisaoMaior = (atributo, campo) => { return atributo > campo }
-    decisaoMenor = (atributo, campo) => { return atributo < campo }
-    decisaoMaiorIgual = (atributo, campo) => { return atributo >= campo }
-    decisaoMenorIgual = (atributo, campo) => { return atributo <= campo }
+    decisaoIgual = (atributo, campo) => { return parseInt(atributo) == parseInt(campo) }
+    decisaoSomar = (atributo, campo) => { return parseInt(atributo) + parseInt(campo) }
+    decisaoMaior = (atributo, campo) => { return parseInt(atributo) > parseInt(campo) }
+    decisaoMenor = (atributo, campo) => { return parseInt(atributo) < parseInt(campo) }
+    decisaoMaiorIgual = (atributo, campo) => { return parseInt(atributo) >= parseInt(campo) }
+    decisaoMenorIgual = (atributo, campo) => { return parseInt(atributo) <= parseInt(campo) }
 
     /* --------------------------------------------------------------------- */
     /* -> Temporizadoras  <--------------------------------------------------- */
@@ -449,7 +462,6 @@
     /* -> Participantes <--------------------------------------------------- */
     /* --------------------------------------------------------------------- */
 
-
     const tipo_ambiente = '{{ tipo_ambiente }}'
     let participante = ''
     let participantes = []
@@ -469,7 +481,7 @@
         const estado_paciente = ['Saudável', 'Infeccioso', 'Exposto']
 
         for (i = 0; i < quantidade_participantes; i++) {
-            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], getInteiroAleatorio(26, 31),[])
+            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], getInteiroAleatorio(36, 41),[])
             participantes.push(p)
         }
     }
