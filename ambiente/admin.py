@@ -10,7 +10,7 @@ class AmbienteAdmin(admin.ModelAdmin):
 
 @admin.register(Atividade)
 class AtividadeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'ambiente', 'atividade', 'direcao', 'duracao', 'versao']
+    list_display = ['id', 'ambiente', 'atividade', 'direcao', 'duracao', 'versao',  'linha', 'coluna']
     list_filter = ['ambiente', 'versao']
     search_filter = ['ambiente', 'atividade', 'versao']
 

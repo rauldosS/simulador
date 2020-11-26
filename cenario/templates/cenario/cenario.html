@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
-                    <div class="row col-10">
+                    <div class="row col-8">
                         <div class="row col-12">
                             <div class="col-6">
                                 <p class="pt-3">Mapa do ambiente</p>
@@ -132,6 +132,12 @@
                             </form>
                         </div>
                     </div>
+                    <div class="row col-2">
+                        <div class="col-12">
+                            <p class="pt-3">Participantes</p>
+                            <div id="participantes" class="row col-12 text-right"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,6 +146,7 @@
 
 <script>
     const descricao_atividade = document.getElementById('descricao_atividade')
+    const div_participantes = document.getElementById('participantes')
     const id_ambiente = '{{ ambiente }}'
     const ambiente = document.getElementById('ambiente')
 
@@ -160,18 +167,18 @@
     }
 
     const rotas = {
-        'C': 'fas fa-arrow-up',
-        'D': 'fas fa-arrow-right',
-        'B': 'fas fa-arrow-down',
-        'E': 'fas fa-arrow-left',
-        'F': 'fas fa-times-circle',
-        'DC': 'fas fa-question-circle',
+        'C': ['fas fa-arrow-up', 'animate__animated animate__slideInLeft'],
+        'D': ['fas fa-arrow-right', 'animate__animated animate__slideInLeft'],
+        'B': ['fas fa-arrow-down', 'animate__animated animate__slideInDown'],
+        'E': ['fas fa-arrow-left', 'animate__animated animate__slideInLeft'],
+        'F': ['fas fa-times-circle', 'animate__animated animate__fadeOut'],
+        'DC': ['fas fa-question-circle', 'animate__animated animate__fadeOut'],
     }
 
     const estados = {
-        'Saudável': 'text-primary',
-        'Infeccioso': 'text-danger',
-        'Exposto': 'text-warning'
+        'Saudável': ['text-primary', 'badge-primary'],
+        'Infeccioso': ['text-danger', 'badge-danger'],
+        'Exposto': ['text-warning', 'badge-warning']
     }
 
     let tipo_selecionado = ''
@@ -212,7 +219,7 @@
             if ('{{ atividade.tipo }}' == 'O') {
                 i.setAttribute('class', '{{ atividade.icone }}')
             } else {
-                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}']} text-white` : atividades['{{ atividade.tipo }}'][0])
+                i.setAttribute('class', '{{ atividade.tipo }}' == 'R' ? `${rotas['{{ atividade.direcao }}'][0]} text-white` : atividades['{{ atividade.tipo }}'][0])
             }
 
             atividade_documento.append(i)
@@ -354,13 +361,7 @@
             retorno_atividade ? proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_verdadeira')) : proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_falsa'))
         }
 
-        console.log(`\n\nPRÓXIMA ATIVIDADE: ${ proxima_atividade.getAttribute('id') }`)
-
-        console.log('------------------------------')
-        console.log(`Participante: ${ numero_participante } - está na atividade "${ atividade_atual.getAttribute('title') }" - ${ tipo_atividade_atual }`)
-        console.log('Número participante:', numero_participante)
-        console.log('Atividades:', participantes[numero_participante]['atividades'])
-        console.log(participantes[numero_participante])
+        gerarDadosParticipante(participantes[numero_participante], atividade_atual)
        
         participantes[numero_participante]['atividades'].push(id_atividade)
 
@@ -395,13 +396,55 @@
             atividade_atual.removeAttribute('conteudo')
             atividade_atual.classList.remove('participante_atividade')
         }, (duracao*1000) + 1)
+    }
 
+    gerarDadosParticipante = (participante, atividade_atual) => {
+        const tipo_atividade = atividade_atual.getAttribute('tipo_atividade')
+        const participante_ = document.getElementById(participante['id'].toString())
+
+        /*
+            const participante verifica se o cartão do participante já existe, caso já exista irá apenas
+            atualizar a atividade atual do mesmo
+        */
+
+        if (participante_ == null) {
+            const button = document.createElement('button')
+            const span_atividade_atual = document.createElement('span')
+
+            button.setAttribute('id', participante['id'])
+            button.setAttribute('type', 'button')
+            button.setAttribute('class', `btn ${ estados[participante['estado']][1] } col-12 mb-2 text-white animate__animated animate__fadeInDown`)
+
+            button.textContent = participante['nome']
+
+            span_atividade_atual.setAttribute('class', 'badge badge-light ml-1')
+            span_atividade_atual.setAttribute('id', `atividade_atual${ participante['id'] }`)
+            span_atividade_atual.textContent = atividade_atual.getAttribute('title')
+
+            button.append(span_atividade_atual)
+            div_participantes.append(button)
+        } else {
+            document.getElementById(`atividade_atual${ participante['id'] }`).textContent = atividade_atual.getAttribute('title')
+        }
+
+        // <button type="button" class="btn badge-primary mb-1">
+        //     Notifications <span class="badge badge-light">4</span>
+        // </button>
     }
 
     atualizarIcone = (participante, atividade, tipo_atividade, anterior) => {
-        let atividade_ = document.getElementById(atividade)
+        const atividade_ = document.getElementById(atividade)
+        const direcao_anterior = document.getElementById(atividade_.getAttribute('atividade_anterior'))
+        const animacao_ = rotas[direcao_anterior.getAttribute('direcao')][1]
+        // animate__animated animate__slideInDown
 
-        atividade_.innerHTML = `<i class='${ anterior ? tipo_atividade = 'R' ? rotas[document.getElementById(atividade).getAttribute('direcao')] : atividades[tipo_atividade][0] : atividades[tipo_atividade][3] + ' ' + estados[participante['estado']] } text-white'></i>`
+        if (anterior) {
+            atividade_.innerHTML = `<i class='${ tipo_atividade = 'R' ? rotas[document.getElementById(atividade).getAttribute('direcao')][0] : atividades[tipo_atividade][0] } text-white animate__animated animate__zoomIn'></i>`
+        } else {
+            atividade_.innerHTML = `<i class='${ atividades[tipo_atividade][3] + ' ' + estados[participante['estado']][0] } text-white ${ animacao_ }'></i>`
+        }
+
+        // atividade_.innerHTML = `<i class='${ anterior ? tipo_atividade = 'R' ? rotas[document.getElementById(atividade).getAttribute('direcao')] : atividades[tipo_atividade][0] : atividades[tipo_atividade][3] + ' ' + estados[participante['estado']] } text-white'></i>`
     }
 
     /* --------------------------------------------------------------------- */
@@ -470,7 +513,8 @@
 
     instanciarParticipanteCOVID = (quantidade_participantes) => {
         class Participante {
-            constructor(nome, estado, temperatura, atividades) {
+            constructor(id, nome, estado, temperatura, atividades) {
+                this.id = id,
                 this.nome = nome
                 this.estado = estado,
                 this.temperatura = temperatura,
@@ -481,8 +525,10 @@
         const estado_paciente = ['Saudável', 'Infeccioso', 'Exposto']
 
         for (i = 0; i < quantidade_participantes; i++) {
-            p = new Participante(nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], getInteiroAleatorio(36, 41),[])
+            p = new Participante(i, nomes[getInteiroAleatorio(0, 100)], estado_paciente[getInteiroAleatorio(0, 3)], getInteiroAleatorio(36, 41),[])
             participantes.push(p)
+
+            i++
         }
     }
 
