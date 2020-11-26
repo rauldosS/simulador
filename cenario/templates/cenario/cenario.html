@@ -113,8 +113,8 @@
                                 <p class="pt-3">Mapa do ambiente</p>
                             </div>
                             <p class="col-5 text-right align-self-center">
-                                <span id="descricao_atividade" class="badge badge-primary badge-simulacao"></span>
-                                <span id="tempo_simulacao" class="badge badge-danger badge-simulacao"></span>
+                                <span id="descricao_atividade" class="badge badge-primary badge-simulacao shadow-light"></span>
+                                <span id="tempo_simulacao" class="badge badge-danger badge-simulacao shadow-light"></span>
                             </p>
                             <div class="col-12 d-flex" id="ambiente">
                             </div>
@@ -413,7 +413,7 @@
 
             button.setAttribute('id', participante['id'])
             button.setAttribute('type', 'button')
-            button.setAttribute('class', `btn ${ estados[participante['estado']][1] } col-12 mb-2 text-white animate__animated animate__fadeInDown`)
+            button.setAttribute('class', `btn ${ estados[participante['estado']][1] } col-12 mb-2 shadow-light text-white animate__animated animate__fadeInDown`)
 
             button.textContent = participante['nome']
 
