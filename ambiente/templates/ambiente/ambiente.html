@@ -111,6 +111,7 @@
                                   <option value="D">Direita</option>
                                   <option value="B">Baixo</option>
                                   <option value="E">Esquerda</option>
+                                  <option value="M">Múltiplo</option>
                                   <option value="DC">Decisão</option>
                                   <option value="F">Fim</option>
                                 </select>
@@ -161,6 +162,7 @@
                                             <div id="div_atributos_simulacao">
                                                 <!-- <a id="direcao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'direcao', this.getAttribute('value'))" value=""><i class="fas fa-route mr-1"></i></i>Direção</a> -->
                                                 <a id="duracao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'duracao', this.getAttribute('value'))" value=""><i class="far fa-clock mr-1"></i>Duração</a>
+                                                <a id="simnao_atividade_formula" class="badge badge-danger text-white m-1 p-2 cursor-pointer" onclick="selecionarElementoFormula('atributo', 'sim/nao', this.getAttribute('value'))" value="Sim/Não"><i class="far fa-question-circle mr-1"></i>Sim/Não</a>
                                             </div>
                                         </div>
                                         <div class="col-6 mt-3">
@@ -316,6 +318,7 @@
                 'cor': 'bg-danger',
                 'direcao': ['fas fa-route mr-1', 'simulacao'],
                 'duracao': ['far fa-clock mr-1', 'simulacao'],
+                'sim/nao': ['far fa-question-circle mr-1', 'simulacao'],
                 'temperatura': ['fas fa-temperature-low mr-2', 'participante']
             },
         'prioridade':
@@ -466,7 +469,7 @@
         elemento_atividade.classList.add(tipo == 'O' ? 'bg-white' : atividades[tipo][1], 'atividade_selecionada')
         elemento_atividade.setAttribute('onclick', `atualizarMenuEdicao('${identificador}', '${tipo}')`)
         elemento_atividade.setAttribute('title', `${atividades[tipo][2]}`)
-        elemento_atividade.setAttribute('duracao', tipo == 'O' ? 0 : '')
+        elemento_atividade.setAttribute('duracao', tipo == 'O' ? 0 : 5)
         elemento_atividade.setAttribute('proxima_atividade', tipo == 'O' ? 0 : '')
         elemento_atividade.setAttribute('atividade_anterior', tipo == 'O' ? 0 : '')
         elemento_atividade.setAttribute('linha', coordenada[0])
@@ -825,26 +828,50 @@
     salvarFormula = () => {
         const div_formula = Array.from(document.getElementById('formula').children)
         let formula = []
-
-        if (div_formula.length > 2) {
-            if (atividade_marcada.getAttribute('decisao_verdadeira') == '' || atividade_marcada.getAttribute('decisao_verdadeira') == 'None') { return alert('Selecione uma opção para RETORNO VERDADEIRO') }
-            if (atividade_marcada.getAttribute('decisao_falsa') == '' || atividade_marcada.getAttribute('decisao_falsa') == 'None') { return alert('Selecione uma opção para RETORNO FALSO') }
-
-            div_formula.forEach(function (valor, i) {
+        
+        /*
+            Verifica se o valor do primeiro atributo selecionado na formulá é igual a (div_formula[0]) "Sim/Não"
+            Caso seja será possível salvar a mesma
+            Caso contrário terá que preencher a formulá complemente
+        */
+        
+        if ( div_formula[0].getAttribute('valor') == 'Sim/Não') {
                 const form = {
-                    'tipo': valor.getAttribute('tipo'),
-                    'origem': valor.getAttribute('origem_atributo') ? valor.getAttribute('origem_atributo') : '',
-                    'valor': valor.getAttribute('valor')
+                    'tipo': div_formula[0].getAttribute('tipo'),
+                    'origem': div_formula[0].getAttribute('origem_atributo') ? div_formula[0].getAttribute('origem_atributo') : '',
+                    'valor': div_formula[0].getAttribute('valor')
                 }
 
                 formula.push(form)
-            })
 
-            objeto_formula = Object.assign(objeto_formula, { 'formula': formula })
+                objeto_formula = { 'tipo': 'sim/nao' }
 
-            atividade_marcada.setAttribute('formula', JSON.stringify(objeto_formula))
+                objeto_formula = Object.assign(objeto_formula, { 'formula': formula })
+
+                atividade_marcada.setAttribute('formula', JSON.stringify(objeto_formula))
         } else {
-            return alert('Finalize a fórmula antes de salvar!')
+            if (div_formula.length > 2) {
+                if (atividade_marcada.getAttribute('decisao_verdadeira') == '' || atividade_marcada.getAttribute('decisao_verdadeira') == 'None') { return alert('Selecione uma opção para RETORNO VERDADEIRO') }
+                if (atividade_marcada.getAttribute('decisao_falsa') == '' || atividade_marcada.getAttribute('decisao_falsa') == 'None') { return alert('Selecione uma opção para RETORNO FALSO') }
+
+                div_formula.forEach(function (valor, i) {
+                    const form = {
+                        'tipo': valor.getAttribute('tipo'),
+                        'origem': valor.getAttribute('origem_atributo') ? valor.getAttribute('origem_atributo') : '',
+                        'valor': valor.getAttribute('valor')
+                    }
+
+                    formula.push(form)
+                })
+
+                objeto_formula = { 'tipo': 'operacao' }
+                
+                Object.assign(objeto_formula, { 'formula': formula })
+
+                atividade_marcada.setAttribute('formula', JSON.stringify(objeto_formula))
+            } else {
+                return alert('Finalize a fórmula antes de salvar!')
+            }
         }
     }
 

@@ -150,6 +150,8 @@
     const id_ambiente = '{{ ambiente }}'
     const ambiente = document.getElementById('ambiente')
 
+    const tipo_ambiente = '{{ tipo_ambiente }}'
+
     let tempo_simulacao = document.getElementById('tempo_simulacao')
     let simulacao_iniciada = false
     let pausar = false
@@ -170,7 +172,7 @@
         'C': ['fas fa-arrow-up', 'animate__animated animate__slideInLeft'],
         'D': ['fas fa-arrow-right', 'animate__animated animate__slideInLeft'],
         'B': ['fas fa-arrow-down', 'animate__animated animate__slideInDown'],
-        'E': ['fas fa-arrow-left', 'animate__animated animate__slideInLeft'],
+        'E': ['fas fa-arrow-left', 'animate__animated animate__slideInRight'],
         'F': ['fas fa-times-circle', 'animate__animated animate__fadeOut'],
         'DC': ['fas fa-question-circle', 'animate__animated animate__fadeOut'],
     }
@@ -179,6 +181,13 @@
         'Saudável': ['text-primary', 'badge-primary'],
         'Infeccioso': ['text-danger', 'badge-danger'],
         'Exposto': ['text-warning', 'badge-warning']
+    }
+
+    const atributos_relevantes = {
+        'COVID': {
+            'temperatura': ['fas fa-temperature-low'],
+            'estado': ['fas fa-shield-alt']
+        }
     }
 
     let tipo_selecionado = ''
@@ -357,6 +366,8 @@
 
         if (tipo_atividade_atual == 'D') {
             retorno_atividade = decisao(atividade_atual, participante)
+
+            console.log(retorno_atividade)
             
             retorno_atividade ? proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_verdadeira')) : proxima_atividade = document.getElementById(atividade_atual.getAttribute('decisao_falsa'))
         }
@@ -419,12 +430,23 @@
 
             span_atividade_atual.setAttribute('class', 'badge badge-light ml-1')
             span_atividade_atual.setAttribute('id', `atividade_atual${ participante['id'] }`)
-            span_atividade_atual.textContent = atividade_atual.getAttribute('title')
+            span_atividade_atual.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${ atividade_atual.getAttribute('title') }`
 
             button.append(span_atividade_atual)
+
+            for (const [atributo, opcoes] of Object.entries(atributos_relevantes[tipo_ambiente])) {
+                const span = document.createElement('span')
+
+                span.setAttribute('class', 'badge badge-light ml-1')
+                span.setAttribute('id', `${atributos_relevantes}${ participante['id'] }`)
+                span.innerHTML = `<i class="${ opcoes[0] }"></i> ${ participante[atributo] }`
+
+                button.append(span)
+            }
+
             div_participantes.append(button)
         } else {
-            document.getElementById(`atividade_atual${ participante['id'] }`).textContent = atividade_atual.getAttribute('title')
+            document.getElementById(`atividade_atual${ participante['id'] }`).innerHTML = `<i class="fas fa-map-marker-alt"></i> ${ atividade_atual.getAttribute('title') }`
         }
 
         // <button type="button" class="btn badge-primary mb-1">
@@ -453,6 +475,15 @@
 
     decisao = (atividade, participante) => {
         const formula_ = JSON.parse(atividade.getAttribute('formula'))
+
+        if ( formula_['tipo'] == 'sim/nao' ) { return getInteiroAleatorio(0, 2) }
+
+        /*
+            Verifica se a formulá é do tipo 'operacao' ou 'sim/nao'
+            'operacao': irá recuperar os valores e a opção e retornar o resultado da operação (true, false)
+            'sim/nao': irá verificar a resposta do usuário, em tempo real, se o mesmo deseja realizar a próxima atividade ou não
+        */
+
         const origem = formula_['formula'][0]['origem'].toString()
         const campo_formula = formula_['formula'][2]['valor']
 
@@ -505,7 +536,6 @@
     /* -> Participantes <--------------------------------------------------- */
     /* --------------------------------------------------------------------- */
 
-    const tipo_ambiente = '{{ tipo_ambiente }}'
     let participante = ''
     let participantes = []
 
