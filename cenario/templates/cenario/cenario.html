@@ -88,11 +88,6 @@
                             <a onclick="pausarSimulacao(this)" class="list-group-item list-group-item-action"><i class="far fa-pause-circle mr-2"></i>Pausar</a>
                             <a onclick="pararSimulacao(this)" class="list-group-item list-group-item-action"><i class="far fa-stop-circle mr-2"></i>Parar</a>
                         </div>
-                        <p class="pt-3">Configurações</p>
-                        <div class="form-group">
-                            <label for="quantidade_participantes">Número de participantes</label>
-                            <input id="quantidade_participantes" type="number" class="form-control" placeholder="Número de participantes da simulação">
-                        </div>
                         <p class="pt-3">Atividade</p>
                         <div class="dropdown-divider"></div>
                         <div class="form-group">
@@ -108,8 +103,8 @@
                             <input id="direcao_atividade_selecionada" type="text" class="form-control" placeholder="Tipo da opção" disabled>
                         </div>
                         <div class="form-group">
-                            <label for="formula_['formula']atividade_selecionada">Fórmula</label>
-                            <input id="formula_['formula']atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
+                            <label for="formula_atividade_selecionada">Fórmula</label>
+                            <input id="formula_atividade_selecionada" type="text" class="form-control" placeholder="Fórmula" disabled>
                         </div>
                     </div>
                     <!-- Mapa do ambiente -->
@@ -140,8 +135,26 @@
                     </div>
                     <div class="row col-2">
                         <div class="col-12">
-                            <p class="pt-3">Participantes</p>
+                            <p class="pt-3">Configurações</p>
+                            <div class="form-group">
+                                <label for="numero_participantes">Número de participantes</label>
+                                <input campo="quantidade_participantes" type="range" class="custom-range" min="1" max="100" id="numero_participantes" value="5">
+                                <input id="quantidade_participantes" type="number" class="form-control" value="5" placeholder="Número de participantes da simulação" disabled>
+                            </div>
+
+                            <div class="dropdown-divider"></div>
+
+                            <p class="pt-3">Estado dos participantes</p>
+                            <div class="text-right">
+                                <button class="btn"> Saudáveis <span id="participantes_saudaveis" class="badge badge-primary text-white">0</span></button>
+                                <button class="btn"> Expostos <span id="participantes_expostos" class="badge badge-warning text-white">0</span></button>
+                                <button class="btn"> Infeccioso <span id="participantes_infeccioso" class="badge badge-danger text-white">0</span></button>
+                            </div>                    
+
                             <div id="participantes" class="row col-12 text-right"></div>
+                        </div>
+                        <div class="col-12">
+                            
                         </div>
                     </div>
                 </div>
@@ -268,9 +281,11 @@
         const elemento_atividade = document.getElementById(atividade)
         const nome_atividade_selecionada = document.getElementById('nome_atividade_selecionada')
         const direcao_atividade_selecionada = document.getElementById('direcao_atividade_selecionada')
+        const formula_atividade_selecionada = document.getElementById('formula_atividade_selecionada')
         const duracao_atividade_selecionada = document.getElementById('duracao_atividade_selecionada')
 
         nome_atividade_selecionada.value = elemento_atividade.getAttribute('title')
+        formula_atividade_selecionada.value ? elemento_atividade.getAttribute('formula') : ''
         nome_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'nome_atividade_selecionada', 'title')`)
         duracao_atividade_selecionada.setAttribute('oninput', `atualizarAtributoAtividade('${atividade}', 'duracao_atividade_selecionada', 'duracao')`)
 
@@ -287,12 +302,13 @@
 
         document.getElementById('duracao_atividade_selecionada').value = atividade_marcada.getAttribute('duracao')
         document.getElementById('direcao_atividade_selecionada').value = atividade_marcada.getAttribute('direcao')
-        document.getElementById('tipo_atividade_selecionada').value = atividades[atividade_marcada.getAttribute('tipo_atividade')][2]
+        document.getElementById('formula_atividade_selecionada').value = atividade_marcada.getAttribute('formula')
+        // document.getElementById('tipo_atividade_selecionada').value = atividades[atividade_marcada.getAttribute('tipo_atividade')][2]
 
         let direcao = document.getElementById('direcao_atividade_selecionada')
         atividade_marcada.getAttribute('tipo_atividade') == 'D' ? direcao.disabled = true : direcao.disabled = false
 
-        document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
+        // document.querySelector(`option[value="${atividade_marcada.getAttribute('direcao')}"`).setAttribute('selected', 'true')
     }
 
     desmarcarAtividades = () => {
@@ -339,6 +355,8 @@
             if (quantidade_participantes) {
                 descricao_atividade.textContent = 'Iniciando simulação'
                 tipo_ambiente == 'COVID'? instanciarParticipanteCOVID(quantidade_participantes) : ''
+
+                document.getElementById('numero_participantes').disabled = true
 
                 contagemRegressiva(3)
             } else {
@@ -423,6 +441,18 @@
             const participante verifica se o cartão do participante já existe, caso já exista irá apenas
             atualizar a atividade atual do mesmo
         */
+       
+        const ps = document.getElementById('participantes_saudaveis')
+        const pe = document.getElementById('participantes_expostos')
+        const pi = document.getElementById('participantes_infeccioso')
+
+        const ps_valor = parseInt(ps.textContent)
+        const pe_valor = parseInt(pe.textContent)
+        const pi_valor = parseInt(pi.textContent)
+
+        if (p.estado == 'Saudável') { ps.textContent = ps_valor + 1 }
+        if (p.estado == 'Expostos') { pe.textContent = pe_valor + 1 }
+        if (p.estado == 'Infeccioso') { pi.textContent = pi_valor + 1 }
 
         if (participante_ == null) {
             const button = document.createElement('button')
@@ -512,9 +542,23 @@
     decisaoMaiorIgual = (atributo, campo) => { return parseInt(atributo) >= parseInt(campo) }
     decisaoMenorIgual = (atributo, campo) => { return parseInt(atributo) <= parseInt(campo) }
 
-    /* --------------------------------------------------------------------- */
+    /* ---------------------------------------------------------------------- */
+    /* -> Configurações  <--------------------------------------------------- */
+    /* ---------------------------------------------------------------------- */
+
+    alterarIntervalo = () => {
+        const ranges = document.querySelectorAll("[type='range']")
+
+        ranges.forEach(range => {
+            range.addEventListener('input', () => {
+                document.getElementById(range.getAttribute('campo')).value = range.value
+            })
+        })
+    } 
+
+    /* ---------------------------------------------------------------------- */
     /* -> Temporizadoras  <--------------------------------------------------- */
-    /* --------------------------------------------------------------------- */
+    /* ---------------------------------------------------------------------- */
 
     contagemRegressiva = (segundos) => {
         setTimeout(() => {
@@ -577,6 +621,7 @@
     /* -> Carregar ambiente <--------------------------------------------------- */
 
     carregar_atividades()
+    alterarIntervalo()
 </script>
 
 {% endblock %}
