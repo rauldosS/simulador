@@ -171,15 +171,6 @@ html {
   animation: fadeIn 2s;
   animation-fill-mode: forwards;
 }
-
-@keyframes fadeIn {
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 .carregando i {
   -webkit-animation: fa-spin 1s steps(8) infinite;
   animation: fa-spin 1s steps(8) infinite;

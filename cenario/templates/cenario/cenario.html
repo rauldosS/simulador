@@ -1,7 +1,8 @@
 {% extends "base/index.html" %} {% block titulo %}Ambiente{% endblock %} {% block content %}
 <style>
     .atividade {
-        border: 1px solid #e0e0e0;
+        background-color: #f1f1f1; /* #f1f1f1 */
+        border: 1px solid #fff;
         width: 25px;
         height: 25px;
     }
@@ -57,11 +58,11 @@
 <div class="container mt-3">
     <div class='shadow md-shadow-none rounded-lg h-100 overflow-hidden'>
         <div class='h-100 overflow-y-auto p-3'>
-            <div class='p-2 d-flex border-bottom mb-2 align-items-center'>
-                <h1 class='p-1 m-3'><i class="fas fa-map-marked-alt"></i></h1>
-                <span class='font-weight-normal my-auto' style='font-size: 1.5rem;'>{{ ambiente.nome }}</span>
+            <div class='p-2 d-flex border-bottom mb-2 align-items-center'  style="margin: 0; padding: 0 !important; height: 48px;">
+                <h5 class='col-6 text-truncate'><i class="fas fa-map-marked-alt mr-2"></i>{{ cenario.nome }}</h5>
+                
                 <div class="d-flex flex-end w-100 row">
-                    <span class="badge badge-primary" style="height: min-content;">{{ ambiente.predefinicao.nome }}</span>
+                    <span class="badge badge-primary" style="height: min-content;">{{ ambiente.nome }}</span>
                     <div class="input-group mb-3 col-3">
                         <div class="input-group-prepend" style="height: 38px;">
                             <label class="input-group-text" for="versao">Versão</label>
@@ -135,7 +136,7 @@
                     </div>
                     <div class="row col-2">
                         <div class="col-12">
-                            <p class="pt-3">Configurações</p>
+                            <p class="pt-3"><i class="fas fa-cogs mr-2"></i>Configurações</p>
                             <div class="form-group">
                                 <label for="numero_participantes">Número de participantes</label>
                                 <input campo="quantidade_participantes" type="range" class="custom-range" min="1" max="100" id="numero_participantes" value="5">
@@ -143,15 +144,33 @@
                             </div>
 
                             <div class="dropdown-divider"></div>
-
-                            <p class="pt-3">Estado dos participantes</p>
+                            <p class="pt-3"><i class="fas fa-user-tag mr-2"></i>Estado dos participantes</p>
                             <div class="text-right">
-                                <button class="btn"> Saudáveis <span id="participantes_saudaveis" class="badge badge-primary text-white">0</span></button>
-                                <button class="btn"> Expostos <span id="participantes_expostos" class="badge badge-warning text-white">0</span></button>
-                                <button class="btn"> Infeccioso <span id="participantes_infeccioso" class="badge badge-danger text-white">0</span></button>
+                                <button class="btn border mt-1"> Saudáveis <span id="participantes_saudaveis" class="badge badge-primary text-white">0</span></button>
+                                <button class="btn border mt-1"> Expostos <span id="participantes_expostos" class="badge badge-warning text-white">0</span></button>
+                                <button class="btn border mt-1"> Infeccioso <span id="participantes_infeccioso" class="badge badge-danger text-white">0</span></button>
                             </div>                    
 
-                            <div id="participantes" class="row col-12 text-right"></div>
+                            <div class="dropdown-divider"></div>
+                            <p class="pt-3"><i class="fas fa-users mr-2"></i>Participantes</p>
+                            <div id="participantes" class="row col-12 text-right">Aguardando início da simulação...</div>
+
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group">
+                                <label for="numero_participantes">Distância máximo de transmissão</label>
+                                <input campo="quantidade_participantes" type="range" class="custom-range" min="1" max="100" id="numero_participantes" value="5">
+                                <input id="quantidade_participantes" type="number" class="form-control" value="5" placeholder="Número de participantes da simulação" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="numero_participantes">Probabilidade de exposição</label>
+                                <input campo="quantidade_participantes" type="range" class="custom-range" min="1" max="100" id="numero_participantes" value="5">
+                                <input id="quantidade_participantes" type="number" class="form-control" value="5" placeholder="Número de participantes da simulação" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="numero_participantes">Probabilidade de exposição em distância máxima</label>
+                                <input campo="quantidade_participantes" type="range" class="custom-range" min="1" max="100" id="numero_participantes" value="5">
+                                <input id="quantidade_participantes" type="number" class="form-control" value="5" placeholder="Número de participantes da simulação" disabled>
+                            </div>
                         </div>
                         <div class="col-12">
                             
@@ -357,6 +376,7 @@
                 tipo_ambiente == 'COVID'? instanciarParticipanteCOVID(quantidade_participantes) : ''
 
                 document.getElementById('numero_participantes').disabled = true
+                div_participantes.innerHTML = ''
 
                 contagemRegressiva(3)
             } else {
@@ -441,39 +461,44 @@
             const participante verifica se o cartão do participante já existe, caso já exista irá apenas
             atualizar a atividade atual do mesmo
         */
-       
-        const ps = document.getElementById('participantes_saudaveis')
-        const pe = document.getElementById('participantes_expostos')
-        const pi = document.getElementById('participantes_infeccioso')
-
-        const ps_valor = parseInt(ps.textContent)
-        const pe_valor = parseInt(pe.textContent)
-        const pi_valor = parseInt(pi.textContent)
-
-        if (p.estado == 'Saudável') { ps.textContent = ps_valor + 1 }
-        if (p.estado == 'Expostos') { pe.textContent = pe_valor + 1 }
-        if (p.estado == 'Infeccioso') { pi.textContent = pi_valor + 1 }
 
         if (participante_ == null) {
+            /* Participantes */
+            const ps = document.getElementById('participantes_saudaveis')
+            const pe = document.getElementById('participantes_expostos')
+            const pi = document.getElementById('participantes_infeccioso')
+
+            const ps_valor = parseInt(ps.textContent)
+            const pe_valor = parseInt(pe.textContent)
+            const pi_valor = parseInt(pi.textContent)
+
+            if (participante['estado'] == 'Saudável') { ps.textContent = ps_valor + 1 }
+            if (participante['estado'] == 'Exposto') { pe.textContent = pe_valor + 1 }
+            if (participante['estado'] == 'Infeccioso') { pi.textContent = pi_valor + 1 }
+
             const button = document.createElement('button')
+            const div_nome = document.createElement('div')
             const span_atividade_atual = document.createElement('span')
 
+            /* Participante */
             button.setAttribute('id', participante['id'])
             button.setAttribute('type', 'button')
             button.setAttribute('class', `btn ${ estados[participante['estado']][1] } col-12 mb-2 shadow-light text-white animate__animated animate__fadeInDown`)
 
-            button.textContent = participante['nome']
+            div_nome.setAttribute('class', 'w-100 text-center mb-1 font-weight-bold')
+            div_nome.textContent = participante['nome']
 
             span_atividade_atual.setAttribute('class', 'badge badge-light ml-1')
             span_atividade_atual.setAttribute('id', `atividade_atual${ participante['id'] }`)
             span_atividade_atual.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${ atividade_atual.getAttribute('title') }`
 
+            button.append(div_nome)
             button.append(span_atividade_atual)
 
             for (const [atributo, opcoes] of Object.entries(atributos_relevantes[tipo_ambiente])) {
                 const span = document.createElement('span')
 
-                span.setAttribute('class', 'badge badge-light ml-1')
+                span.setAttribute('class', 'badge badge-light ml-1 animate__animated animate__fadeIn')
                 span.setAttribute('id', `${atributos_relevantes}${ participante['id'] }`)
                 span.innerHTML = `<i class="${ opcoes[0] }"></i> ${ participante[atributo] }`
 
