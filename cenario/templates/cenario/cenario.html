@@ -429,12 +429,12 @@
         atualizarIcone(participantes[numero_participante], id_atividade, tipo_atividade_atual, false)
         
         setTimeout(() => {
-            /* -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM) */
-            if (tipo_atividade_atual != 'F') {
-                executarAtividade(proxima_atividade, participantes[numero_participante], numero_participante)
-            }
+            /*  executarProximaAtividade
+                -> Executar próxima atividade para o participante atual (Se atividade for diferente de FIM).
+                -> Verifica se a próxima atividade contém um participante, caso contenha irá esperar o tempo da atividade para tentar prosseguir.
+            */
 
-            numero_participante = numero_participante + 1
+            numero_participante = executarProximaAtividade(tipo_atividade_atual, proxima_atividade, numero_participante)
 
             /* ->
                 Executar atividade inicial para o próximo participante
@@ -451,6 +451,21 @@
             atividade_atual.removeAttribute('conteudo')
             atividade_atual.classList.remove('participante_atividade')
         }, (duracao*1000) + 1)
+    }
+
+    // -> Função recursiva
+    executarProximaAtividade = (tipo_atividade_atual, proxima_atividade, numero_participante) => {
+        if (tipo_atividade_atual != 'F') {
+            if (proxima_atividade.classList.contains('participante_atividade')) {
+                setTimeout(() => {
+                    executarProximaAtividade(tipo_atividade_atual, proxima_atividade, numero_participante)
+                }, parseInt(proxima_atividade.getAttribute('duracao'))*100)
+            } else {
+                executarAtividade(proxima_atividade, participantes[numero_participante], numero_participante)
+
+                return numero_participante + 1
+            }
+        }
     }
 
     gerarDadosParticipante = (participante, atividade_atual) => {

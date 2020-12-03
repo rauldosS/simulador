@@ -281,13 +281,86 @@
                                         <div class="card-body p-3">
                                             <div class="list-group">    
                                                 <a onclick="selecionarTipo('O', 'fas fa-square-full', 'fa-square-full')" tipo="fa-square-full" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-square-full mr-2"></i>Parede</a>
-                                                <a onclick="selecionarTipo('O', 'fas fa-tree', 'fa-tree')" tipo="fa-tree" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-tree mr-2"></i>Árvore</a>
                                                 <a onclick="selecionarTipo('O', 'fas fa-door', 'fa-door-closed')" tipo="fa-door" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-door-closed mr-2"></i>Porta</a>
                                                 <a onclick="selecionarTipo('O', 'fas fa-dumpster', 'fa-dumpster')" tipo="fa-dumpster" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-dumpster mr-2"></i>Lixeira</a>
                                                 <a onclick="selecionarTipo('O', 'fas fa-home', 'fa-home')" tipo="fa-home" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-home mr-2"></i>Casa</a>
                                                 <a onclick="selecionarTipo('O', 'fas fa-church', 'fa-church')" tipo="fa-church" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-church mr-2"></i>Igreja</a>
                                                 <a onclick="selecionarTipo('O', 'far fa-hospital', 'fa-hospital')" tipo="fa-hospital" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-hospital mr-2"></i>Farmácia</a>
                                                 <a onclick="selecionarTipo('O', 'far fa-building', 'fa-building')" tipo="fa-building" class="list-group-item item-menu objeto list-group-item-action"><i class="far fa-building mr-2"></i>Prédio</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <a class="" data-toggle="collapse" data-target="#plantas" aria-expanded="false" aria-controls="plantas">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0">
+                                                Plantas <span class="badge badge-primary badge-accordion mr-2"><i class="fas fa-tree"></i></span>
+                                            </h5>
+                                        </div>
+                                    </a>
+                                    <div id="plantas" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body p-3">
+                                            <div class="list-group">    
+                                                <a onclick="selecionarTipo('O', 'fas fa-tree', 'fa-tree')" tipo="fa-tree" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-tree"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-seedling', 'fa-seedling')" tipo="fa-seedling" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-seedling"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-spa', 'fa-spa')" tipo="fa-spa" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-spa"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-leaf', 'fa-leaf')" tipo="fa-leaf" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-leaf"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fab fa-canadian', 'fa-canadian')" tipo="fa-canadian" class="list-group-item item-menu objeto list-group-item-action"><i class="fab fa-canadian-maple-leaf"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fab fa-pagelines', 'fa-pagelines')" tipo="fa-pagelines" class="list-group-item item-menu objeto list-group-item-action"><i class="fab fa-pagelines"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-holly', 'fa-holly')" tipo="fa-holly" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-holly-berry"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <a class="" data-toggle="collapse" data-target="#locomocao" aria-expanded="false" aria-controls="locomocao">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0">
+                                                Automóveis <span class="badge badge-primary badge-accordion mr-2"><i class="fas fa-fighter-jet"></i></span>
+                                            </h5>
+                                        </div>
+                                    </a>
+                                
+                                    <div id="locomocao" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body p-3">
+                                            <div class="list-group">
+                                                <a onclick="selecionarTipo('O', 'fas fa-truck', 'fa-truck')" tipo="fa-truck" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-truck"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-taxi', 'fa-taxi')" tipo="fa-taxi" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-taxi"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-rocket', 'fa-rocket')" tipo="fa-rocket" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-rocket"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-ambulance', 'fa-ambulance')" tipo="fa-ambulance" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-ambulance"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-shopping', 'fa-shopping')" tipo="fa-shopping" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-shopping-cart"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-bicycle', 'fa-bicycle')" tipo="fa-bicycle" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-bicycle"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-bicycle', 'fa-bicycle')" tipo="fa-bicycle" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-bicycle"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-plane', 'fa-plane')" tipo="fa-plane" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-plane"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-fighter', 'fa-fighter')" tipo="fa-fighter" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-fighter-jet"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-motorcycle', 'fa-motorcycle')" tipo="fa-motorcycle" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-motorcycle"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-plane', 'fa-plane')" tipo="fa-plane" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-plane"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-plane', 'fa-plane')" tipo="fa-plane" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-plane-departure"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-plane', 'fa-plane')" tipo="fa-plane" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-plane-arrival"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-snowplow', 'fa-snowplow')" tipo="fa-snowplow" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-snowplow"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-helicopter', 'fa-helicopter')" tipo="fa-helicopter" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-helicopter"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-train', 'fa-train')" tipo="fa-train" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-train"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-subway', 'fa-subway')" tipo="fa-subway" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-subway"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-ship', 'fa-ship')" tipo="fa-ship" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-ship"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <a class="" data-toggle="collapse" data-target="#planeta" aria-expanded="false" aria-controls="planeta">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0">
+                                                Planeta <span class="badge badge-primary badge-accordion mr-2"><i class="fas fa-globe-americas"></i></span>
+                                            </h5>
+                                        </div>
+                                    </a>
+                                
+                                    <div id="planeta" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body p-3">
+                                            <div class="list-group">
+                                                <a onclick="selecionarTipo('O', 'fas fa-water', 'fa-water')" tipo="fa-water" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-water"></i></a>
+                                                <a onclick="selecionarTipo('O', 'fas fa-globe', 'fa-globe')" tipo="fa-globe" class="list-group-item item-menu objeto list-group-item-action"><i class="fas fa-globe-americas"></i></a>
                                             </div>
                                         </div>
                                     </div>
