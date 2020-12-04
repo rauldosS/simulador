@@ -4,6 +4,7 @@
 
 animate__animated
 animate__delay-2s
+animate__infinite
 
 # Movimento mouse
 

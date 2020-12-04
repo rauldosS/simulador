@@ -16,7 +16,7 @@
                 <div id="accordion">
                     {% for ambiente, dados in cenarios_ambientes.items %}
                     <div class="card">
-                        <a class="" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <a class="" data-toggle="collapse" data-target="#card{{ forloop.counter }}" aria-expanded="true" aria-controls="card{{ forloop.counter }}">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     {{ dados.nome }} <span class="badge badge-primary badge-accordion">Ambiente {{ ambiente }}</span>
@@ -24,7 +24,7 @@
                             </div>
                         </a>
                     
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div id="card{{ forloop.counter }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                             <div class="card-body p-3">
                                 {% for cenario, dados_cenario in dados.cenarios.items %}
                                     <a href="{% url 'cenario:cenario' cenario ambiente %}">
