@@ -405,6 +405,58 @@
     -webkit-animation-name: agua;
     animation-name: agua;
 }
+@-webkit-keyframes fogo {
+    0%,
+    to {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+    10%,
+    20%,
+    30%,
+    40%,
+    50%,
+    60%,
+    70%,
+    80%,
+    90% {
+        -webkit-transform: translate3d(0, 1px, 0);
+        transform: translate3d(0, 1px, 0px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        -webkit-transform: translate3d(0, 2px, 0);
+        transform: translate3d(0, 2px, 0);
+    }
+}
+@keyframes fogo {
+    0%,
+    to {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        -webkit-transform: translate3d(0, 1px, 0);
+        transform: translate3d(0, 1px, 0px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        -webkit-transform: translate3d(0, 2px, 0);
+        transform: translate3d(0, 2px, 0);
+    }
+}
+.animate__fogo {
+    -webkit-animation-name: fogo;
+    animation-name: fogo;
+}
 @-webkit-keyframes shakeY {
     0%,
     to {
